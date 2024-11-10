@@ -17,6 +17,6 @@ public class GroupTextRender {
 		ArrayList<String> filenames = editor.getAllWindowFilenames();
 		int CursorX = editor.getCurrWindowCursorX();
 		int CursorY = editor.getCurrWindowCursorY();
-
+		//this is a test
 	}
 }
