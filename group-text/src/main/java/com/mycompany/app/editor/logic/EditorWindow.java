@@ -18,6 +18,14 @@ public class EditorWindow {
 
 	EditorWindow () {
 		// default window open
+		this.cursorX = 0;
+		this.cursorY = 0;
+
+		this.filename = "NewFile.txt";
+		this.fileExtention = "txt";
+
+		this.data = new ArrayList<>();
+		this.data.add(new StringBuilder());
 	}
 
 	EditorWindow (String filename) {
@@ -77,7 +85,6 @@ public class EditorWindow {
 			ret.add(new String(s));
 		}
 		return ret;
-		
 	}
 
 
@@ -85,26 +92,44 @@ public class EditorWindow {
 
 	// window editing methods
 	protected void setCursorX(int x) {
+		if (x > this.data.size() || x < 0) throw new ArrayIndexOutOfBoundsException();
 		this.cursorX = x;
 	}
 
 	protected void setCursorY(int y) {
+		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
 		this.cursorY = y;
 	}
 
-	protected void insertCharacter (char c, int x, int y) {
+	protected void insertCharacter(char c, int x, int y) {
+		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
+		if (x < 0 || x > this.data.size()) throw new ArrayIndexOutOfBoundsException();
 		this.data.get(y).insert(x, c);
 	}
 
+	protected void insertCharacter(char c) {
+		insertCharacter(c, this.cursorX, this.cursorY);
+	}
+
 	protected void removeCharacter(int x, int y) {
+		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
+		if (x < 0 || x > this.data.size()) throw new ArrayIndexOutOfBoundsException();
 		this.data.get(y).deleteCharAt(x);
 	}
 
-	protected void insertNewline(int y) {
-		this.data.add(y, new StringBuilder());
+	protected void removeCharacter() {
+		removeCharacter(this.cursorX, this.cursorY);
 	}
 
-	protected void removeLine(int x) {
-		this.data.remove(x);
+	protected void insertNewline(int y) {
+		if (y < 0) throw new ArrayIndexOutOfBoundsException();
+
+		if (y > this.data.size()) this.data.add(new StringBuilder());
+		else this.data.add(y, new StringBuilder());
+	}
+
+	protected void removeLine(int y) {
+		if (y < 0 || y > this.data.size()) throw new ArrayIndexOutOfBoundsException();
+		this.data.remove(y);
 	}
 }
