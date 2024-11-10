@@ -1,7 +1,8 @@
 package com.mycompany.app.editor.logic;
 
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Vector;
+import java.util.Scanner;
 
 /**
  * EditorWindow
@@ -13,7 +14,7 @@ public class EditorWindow {
 	private String filename;
 	private String fileExtention;
 
-	private ArrayList<String> data;
+	private ArrayList<StringBuilder> data;
 
 	EditorWindow () {
 		// default window open
@@ -27,8 +28,17 @@ public class EditorWindow {
 		String[] components = filename.split(".");
 		this.fileExtention = components[components.length - 1];
 
-		// parse the data out of the file
-
+		// TODO prolly unsafe
+		try {
+			File file = new File(filename);
+			Scanner scanner = new Scanner(file);
+			ArrayList<StringBuilder> data = new ArrayList<>();
+			while (scanner.hasNextLine()) data.add(new StringBuilder(scanner.nextLine()));
+			scanner.close();
+			this.data = data;
+		} catch (Exception e) {
+			return;
+		}
 	}
 
 	EditorWindow (EditorWindow window) {
@@ -61,18 +71,19 @@ public class EditorWindow {
 		return new String(this.data.get(lineNumber));
 	}
 
-	// TODO 
-	public Vector<String> getData() {
-		return null;
+	public ArrayList<String> getData() {
+		ArrayList<String> ret = new ArrayList<>();
+		for (StringBuilder s : this.data) {
+			ret.add(new String(s));
+		}
+		return ret;
+		
 	}
 
 
 
 
-
-
 	// window editing methods
-
 	protected void setCursorX(int x) {
 		this.cursorX = x;
 	}
@@ -82,18 +93,18 @@ public class EditorWindow {
 	}
 
 	protected void insertCharacter (char c, int x, int y) {
-		
+		this.data.get(y).insert(x, c);
 	}
 
 	protected void removeCharacter(int x, int y) {
-
+		this.data.get(y).deleteCharAt(x);
 	}
 
 	protected void insertNewline(int y) {
-
+		this.data.add(y, new StringBuilder());
 	}
 
 	protected void removeLine(int x) {
-
+		this.data.remove(x);
 	}
 }

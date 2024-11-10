@@ -1,11 +1,11 @@
 package com.mycompany.app.editor.logic;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import com.mycompany.app.editor.render.GroupTextRender;
 
 public class Editor {
-	private Vector<EditorWindow> windows;
+	private ArrayList<EditorWindow> windows;
 	private int indexPrimary;
 
 	public Editor () {
@@ -26,23 +26,23 @@ public class Editor {
 		}
 	}
 
-	public Vector<String> getAllWindowFilenames() {
-		Vector<String> filenames = new Vector<>();
+	public ArrayList<String> getAllWindowFilenames() {
+		ArrayList<String> filenames = new ArrayList<>();
 		for (EditorWindow win : windows) {
 			filenames.add(win.getFilename());
 		}
 		return filenames;
 	}
 
-	public Vector<String> getAllWindowFileExtentions() {
-		Vector<String> fileExt = new Vector<>();
+	public ArrayList<String> getAllWindowFileExtentions() {
+		ArrayList<String> fileExt = new ArrayList<>();
 		for (EditorWindow win : windows) {
 			fileExt.add(win.getFileExtention());
 		}
 		return fileExt;
 	}
 
-	public Vector<String> getCurrWindowData() {
+	public ArrayList<String> getCurrWindowData() {
 		return this.windows.get(this.indexPrimary).getData();
 	}
 
