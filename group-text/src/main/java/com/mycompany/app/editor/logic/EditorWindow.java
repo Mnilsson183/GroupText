@@ -22,31 +22,21 @@ public class EditorWindow {
 		this.cursorY = 0;
 
 		this.filename = "NewFile.txt";
-		this.fileExtention = "txt";
+		//this.fileExtention = "txt";
 
 		this.data = new ArrayList<>();
 		this.data.add(new StringBuilder());
 	}
 
-	EditorWindow (String filename) {
+	EditorWindow (String newFilename) {
 		this.cursorX = 0;
 		this.cursorY = 0;
 
-		this.filename = new String(filename);
-		String[] components = filename.split(".");
-		this.fileExtention = components[components.length - 1];
+		this.filename = new String(newFilename);
+		//String[] components = filename.split(".");
+		//this.fileExtention = components[components.length - 1];
 
-		// TODO prolly unsafe
-		try {
-			File file = new File(filename);
-			Scanner scanner = new Scanner(file);
-			ArrayList<StringBuilder> data = new ArrayList<>();
-			while (scanner.hasNextLine()) data.add(new StringBuilder(scanner.nextLine()));
-			scanner.close();
-			this.data = data;
-		} catch (Exception e) {
-			return;
-		}
+		this.data = new ArrayList<>();
 	}
 
 	EditorWindow (EditorWindow window) {
@@ -54,9 +44,12 @@ public class EditorWindow {
 		this.cursorY = window.getCursorY();
 
 		this.filename = window.getFilename();
-		this.fileExtention = window.getFileExtention();
+		//this.fileExtention = window.getFileExtention();
 
-		// method for getting the data
+		this.data = new ArrayList<>();
+		for (StringBuilder sb : window.data) {
+			this.data.add(new StringBuilder(sb));
+		}
 	}
 
 	public int getCursorX () {
@@ -131,5 +124,13 @@ public class EditorWindow {
 	protected void removeLine(int y) {
 		if (y < 0 || y > this.data.size()) throw new ArrayIndexOutOfBoundsException();
 		this.data.remove(y);
+	}
+
+	public boolean equals(EditorWindow window) {
+		if (this.filename != window.filename) return false;
+		if (this.cursorX != window.cursorX) return false;
+		if (this.cursorY != window.cursorY) return false;
+		if (this.data != window.data) return false;
+		return true;
 	}
 }

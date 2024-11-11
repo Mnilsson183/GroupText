@@ -15,16 +15,22 @@ public class Editor {
 
 	private Vector<UserEditor> users;
 
-	private void processKeyIn(char c) {
-		
+	public Editor () {
+		this.users = new Vector<>();
+		this.users.add(new UserEditor());
+	}
+
+	public void processKeyIn(char c) {
+		System.out.println("Editor processKeyIn not implimented");
 	}
 
 	public void runEditor () {
-		GroupTextRender renderer = new GroupTextRender();
+		GroupTextRender renderer = new GroupTextRender(this);
+		renderer.setVisible(true);
 		while (true) {
 			
 
-			renderer.render(this);
+			renderer.render();
 		}
 	}
 
