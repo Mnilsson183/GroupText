@@ -1,17 +1,19 @@
 package com.mycompany.app.editor.logic;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 import com.mycompany.app.editor.render.GroupTextRender;
 
+/*
+ * Editor class
+ * Holds all of the data for all users attatched to a session via a get method
+ * Primary user is the user that the promgram is being currently run on ie
+ * primary user holds the data that the client needs to render
+ *
+ */
 public class Editor {
-	private ArrayList<EditorWindow> windows;
-	private int indexPrimary;
 
-	public Editor () {
-		this.windows = null;
-		this.indexPrimary = -1;
-	}
+	private Vector<UserEditor> users;
 
 	private void processKeyIn(char c) {
 		
@@ -26,31 +28,11 @@ public class Editor {
 		}
 	}
 
-	public ArrayList<String> getAllWindowFilenames() {
-		ArrayList<String> filenames = new ArrayList<>();
-		for (EditorWindow win : windows) {
-			filenames.add(win.getFilename());
-		}
-		return filenames;
+	public UserEditor getPrimaryUser() {
+		return this.users.get(0);
 	}
 
-	public ArrayList<String> getAllWindowFileExtentions() {
-		ArrayList<String> fileExt = new ArrayList<>();
-		for (EditorWindow win : windows) {
-			fileExt.add(win.getFileExtention());
-		}
-		return fileExt;
-	}
-
-	public ArrayList<String> getCurrWindowData() {
-		return this.windows.get(this.indexPrimary).getData();
-	}
-
-	public int getCurrWindowCursorX() {
-		return this.windows.get(this.indexPrimary).getCursorX();
-	}
-
-	public int getCurrWindowCursorY() {
-		return this.windows.get(this.indexPrimary).getCursorY();
+	public UserEditor getUser(int index) {
+		return this.users.get(index);
 	}
 }
