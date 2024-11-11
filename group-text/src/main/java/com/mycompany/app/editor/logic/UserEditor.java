@@ -9,11 +9,18 @@ import java.util.ArrayList;
  */
 public class UserEditor {
 	private ArrayList<EditorWindow> windows;
-	private int indexPrimary;
+	private int focusedWindowIndex;
 
 	public UserEditor () {
-		this.windows = null;
-		this.indexPrimary = -1;
+		this.windows = new ArrayList<>();
+		this.focusedWindowIndex = 0;
+		addWindow(new EditorWindow());
+	}
+
+	public UserEditor (String initialFilename) {
+		this.windows = new ArrayList<>();
+		this.focusedWindowIndex = 0;
+		addWindow(new EditorWindow(initialFilename));
 	}
 
 	public ArrayList<String> getAllWindowFilenames() {
@@ -33,14 +40,18 @@ public class UserEditor {
 	}
 
 	public ArrayList<String> getCurrWindowData() {
-		return this.windows.get(this.indexPrimary).getData();
+		return this.windows.get(this.focusedWindowIndex).getData();
 	}
 
 	public int getCurrWindowCursorX() {
-		return this.windows.get(this.indexPrimary).getCursorX();
+		return this.windows.get(this.focusedWindowIndex).getCursorX();
 	}
 
 	public int getCurrWindowCursorY() {
-		return this.windows.get(this.indexPrimary).getCursorY();
+		return this.windows.get(this.focusedWindowIndex).getCursorY();
+	}
+
+	public void addWindow(EditorWindow window) {
+		this.windows.add(window);
 	}
 }
