@@ -19,7 +19,7 @@ public class GroupTextRender extends JFrame {
         setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        mainPanel = new JPanel(null) { // Use null layout
+        mainPanel = new JPanel(null) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -31,17 +31,16 @@ public class GroupTextRender extends JFrame {
 
         mainPanel.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(KeyEvent e) {
-                processKeyInput(e.getKeyChar());
+            public void keyPressed(KeyEvent e) {
+                processKeyInput(e);
             }
         });
 
         add(mainPanel);
     }
 
-    private void processKeyInput(char keyChar) {
-        System.out.println("Key pressed: " + keyChar);
-        this.editor.processKeyIn(keyChar);
+    private void processKeyInput(KeyEvent event) {
+        this.editor.processKeyIn(event);
         mainPanel.repaint(); // Trigger a repaint to update the display
     }
 
@@ -52,8 +51,6 @@ public class GroupTextRender extends JFrame {
         int cursorX = primaryUser.getFocusedWindowCursorX();
         int cursorY = primaryUser.getFocusedWindowCursorY();
 
-        // Implement your custom rendering here
-        // For example:
         g.setColor(Color.BLACK);
         g.setFont(new Font("Monospaced", Font.PLAIN, 12));
         for (int i = 0; i < lines.size(); i++) {
@@ -62,7 +59,7 @@ public class GroupTextRender extends JFrame {
 
         // Draw cursor
         g.setColor(Color.RED);
-        g.fillRect(10 + cursorX * 7, 8 + cursorY * 15, 2, 14); // Adjust based on your font metrics
+        g.fillRect(10 + cursorX * 7, 8 + cursorY * 15, 2, 14);
     }
 
     public void updateDisplay() {

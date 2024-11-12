@@ -3,6 +3,7 @@ package com.mycompany.app.editor.logic;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.awt.event.KeyEvent;
 
 /**
  * EditorWindow
@@ -84,14 +85,54 @@ public class EditorWindow {
 
 
 	// window editing methods
-	protected void setCursorX(int x) {
-		if (x > this.data.size() || x < 0) throw new ArrayIndexOutOfBoundsException();
-		this.cursorX = x;
+	public void processKeyIn(KeyEvent e) {
+		System.out.println("Key pressed: " + e.getKeyChar() + " Key-val pressed: " + (int)e.getKeyChar());
+		int keyCode = e.getKeyCode();
+
+		// cursor movment
+		if (keyCode == KeyEvent.VK_UP) this.moveCursorUp();
+		else if (keyCode == KeyEvent.VK_DOWN) this.moveCursorDown();
+		else if (keyCode == KeyEvent.VK_RIGHT) this.moveCursorRight();
+		else if (keyCode == KeyEvent.VK_LEFT) this.moveCursorLeft();
+
+		else if (keyCode == KeyEvent.VK_BACK_SPACE) this.removeCharacter();
+
+		else if (keyCode == KeyEvent.VK_ENTER) this.insertNewline();
+		else if (keyCode == KeyEvent.VK_TAB) insertChars("    ");
+
+		else if (keyCode == KeyEvent.VK_SHIFT) return;
+		else {
+			char keyChar = e.getKeyChar();
+			this.insertCharacter(keyChar);
+		}
 	}
 
-	protected void setCursorY(int y) {
-		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
-		this.cursorY = y;
+	protected void moveCursorUp() {
+		if (this.cursorY == 0) return; // going up at the top
+		this.cursorY--;
+		if (this.cursorX > this.data.get(this.cursorY).length()) this.cursorX = this.data.get(this.cursorY).length();
+	}
+
+	protected void moveCursorRight() {
+		if (this.cursorX == this.data.get(this.cursorY).length() ) {
+			if (this.cursorY != this.data.size()-1) {
+				this.cursorY++;
+				this.cursorX = 0;
+			} else return;
+		} else {
+			this.cursorX++;
+		}
+	}
+
+	protected void moveCursorLeft() {
+		if (this.cursorX == 0) return;
+		else this.cursorX--;
+	}
+
+	protected void moveCursorDown() {
+		if (this.cursorY == this.data.size()-1) return; // going down at the bottom
+		this.cursorY++;
+		if (this.cursorX > this.data.get(this.cursorY).length()) this.cursorX = this.data.get(this.cursorY).length();
 	}
 
 	protected void insertCharacter(char c, int x, int y) {
@@ -105,6 +146,10 @@ public class EditorWindow {
 		this.cursorX++;
 	}
 
+	protected void insertChars(String s) {
+		for (int i = 0; i < s.length(); i++) insertCharacter(s.charAt(i));
+	}
+
 	protected void removeCharacter(int x, int y) {
 		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
 		if (x < 0 || x > this.data.get(y).length()) throw new ArrayIndexOutOfBoundsException();
@@ -112,7 +157,7 @@ public class EditorWindow {
 	}
 
 	protected void removeCharacter() {
-		removeCharacter(this.cursorX, this.cursorY);
+		removeCharacter(this.cursorX-1, this.cursorY);
 		this.cursorX--;
 	}
 
@@ -124,8 +169,9 @@ public class EditorWindow {
 	}
 
 	protected void insertNewline() {
-		this.data.add(this.cursorY, new StringBuilder());
+		this.data.add(this.cursorY+1, new StringBuilder());
 		this.cursorY++;
+		this.cursorX = 0;
 	}
 
 	protected void removeLine(int y) {
