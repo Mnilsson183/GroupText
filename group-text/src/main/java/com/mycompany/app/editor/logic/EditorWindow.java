@@ -96,22 +96,24 @@ public class EditorWindow {
 
 	protected void insertCharacter(char c, int x, int y) {
 		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
-		if (x < 0 || x > this.data.size()) throw new ArrayIndexOutOfBoundsException();
+		if (x < 0 || x > this.data.get(y).length()) throw new ArrayIndexOutOfBoundsException();
 		this.data.get(y).insert(x, c);
 	}
 
 	protected void insertCharacter(char c) {
 		insertCharacter(c, this.cursorX, this.cursorY);
+		this.cursorX++;
 	}
 
 	protected void removeCharacter(int x, int y) {
 		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
-		if (x < 0 || x > this.data.size()) throw new ArrayIndexOutOfBoundsException();
+		if (x < 0 || x > this.data.get(y).length()) throw new ArrayIndexOutOfBoundsException();
 		this.data.get(y).deleteCharAt(x);
 	}
 
 	protected void removeCharacter() {
 		removeCharacter(this.cursorX, this.cursorY);
+		this.cursorX--;
 	}
 
 	protected void insertNewline(int y) {
@@ -119,6 +121,11 @@ public class EditorWindow {
 
 		if (y > this.data.size()) this.data.add(new StringBuilder());
 		else this.data.add(y, new StringBuilder());
+	}
+
+	protected void insertNewline() {
+		this.data.add(this.cursorY, new StringBuilder());
+		this.cursorY++;
 	}
 
 	protected void removeLine(int y) {

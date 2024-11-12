@@ -22,4 +22,11 @@ public class UserEditorTest {
 		assertEquals("test2.txt", filenames.get(1));
 	}
 
+	@Test
+	public void insertCharacterTest() {
+		UserEditor uEditor = new UserEditor();
+		uEditor.getFocusedWindow().insertCharacter('c');
+		assertEquals("c", uEditor.getFocusedWindow().getLine(0));
+		assertEquals(1, uEditor.getFocusedWindow().getCursorX());
+	}
 }

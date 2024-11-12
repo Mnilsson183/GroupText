@@ -15,6 +15,33 @@ public class EditorWindowTest {
 		EditorWindow eWindow = new EditorWindow();
 		eWindow.insertCharacter('c', 0, 0);
 		assertEquals("c", eWindow.getLine(0));
+		assertEquals(0, eWindow.getCursorY());
+		assertEquals(0, eWindow.getCursorX());
+		assertEquals(1, eWindow.getLine(0).length());
+
+		eWindow.insertCharacter('1');
+		assertEquals("1c", eWindow.getLine(0));
+		assertEquals(0, eWindow.getCursorY());
+		assertEquals(1, eWindow.getCursorX());
+		assertEquals(2, eWindow.getLine(0).length());
+
+		eWindow.insertCharacter('2');
+		assertEquals("12c", eWindow.getLine(0));
+		assertEquals(0, eWindow.getCursorY());
+		assertEquals(2, eWindow.getCursorX());
+		assertEquals(3, eWindow.getLine(0).length());
+
+		eWindow.insertCharacter('3');
+		assertEquals("123c", eWindow.getLine(0));
+		assertEquals(0, eWindow.getCursorY());
+		assertEquals(3, eWindow.getCursorX());
+		assertEquals(4, eWindow.getLine(0).length());
+
+		eWindow.insertCharacter('c', 0, 0);
+		assertEquals("c123c", eWindow.getLine(0));
+		assertEquals(0, eWindow.getCursorY());
+		assertEquals(3, eWindow.getCursorX());
+		assertEquals(5, eWindow.getLine(0).length());
 
 		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
 			eWindow.insertCharacter('c', -1, 0);
