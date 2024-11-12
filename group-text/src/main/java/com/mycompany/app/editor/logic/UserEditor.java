@@ -39,16 +39,20 @@ public class UserEditor {
 		return fileExt;
 	}
 
-	public ArrayList<String> getCurrWindowData() {
+	public ArrayList<String> getFocusedWindowData() {
 		return this.windows.get(this.focusedWindowIndex).getData();
 	}
 
-	public int getCurrWindowCursorX() {
+	public int getFocusedWindowCursorX() {
 		return this.windows.get(this.focusedWindowIndex).getCursorX();
 	}
 
-	public int getCurrWindowCursorY() {
+	public int getFocusedWindowCursorY() {
 		return this.windows.get(this.focusedWindowIndex).getCursorY();
+	}
+
+	protected EditorWindow getFocusedWindow() {
+		return this.windows.get(this.focusedWindowIndex);
 	}
 
 	public void addWindow(EditorWindow window) {

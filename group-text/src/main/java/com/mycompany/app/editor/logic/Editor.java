@@ -21,7 +21,8 @@ public class Editor {
 	}
 
 	public void processKeyIn(char c) {
-		System.out.println("Editor processKeyIn not implimented");
+		System.out.println("Editor processKeyIn not implimented |" + c + "|");
+		this.getPrimaryUser().getFocusedWindow().insertCharacter(c);
 	}
 
 	public void runEditor () {
@@ -30,7 +31,7 @@ public class Editor {
 		while (true) {
 			
 
-			renderer.render();
+			//renderer.render();
 		}
 	}
 
