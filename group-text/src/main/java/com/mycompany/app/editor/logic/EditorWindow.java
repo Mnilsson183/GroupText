@@ -84,27 +84,48 @@ public class EditorWindow {
 
 
 
-	// window editing methods
 	public void processKeyIn(KeyEvent e) {
-		System.out.println("Key pressed: " + e.getKeyChar() + " Key-val pressed: " + (int)e.getKeyChar());
+		// System.out.println("Key pressed: " + e.getKeyChar() + " Key-val pressed: " + (int)e.getKeyChar());
 		int keyCode = e.getKeyCode();
+		switch (keyCode) {
+			case KeyEvent.VK_UP:
+				this.moveCursorUp();
+				break;
+			case KeyEvent.VK_DOWN:
+				this.moveCursorDown();
+				break;
+			case KeyEvent.VK_RIGHT:
+				this.moveCursorRight();
+				break;
+			case KeyEvent.VK_LEFT:
+				this.moveCursorLeft();
+				break;
 
-		// cursor movment
-		if (keyCode == KeyEvent.VK_UP) this.moveCursorUp();
-		else if (keyCode == KeyEvent.VK_DOWN) this.moveCursorDown();
-		else if (keyCode == KeyEvent.VK_RIGHT) this.moveCursorRight();
-		else if (keyCode == KeyEvent.VK_LEFT) this.moveCursorLeft();
+			case KeyEvent.VK_BACK_SPACE:
+				this.removeCharacter();
+				break;
 
-		else if (keyCode == KeyEvent.VK_BACK_SPACE) this.removeCharacter();
+			case KeyEvent.VK_ENTER:
+				this.insertNewline();
+				break;
+			case KeyEvent.VK_TAB:
+				System.out.println("Tab not implemented");
+				break;
 
-		else if (keyCode == KeyEvent.VK_ENTER) this.insertNewline();
-		else if (keyCode == KeyEvent.VK_TAB) insertChars("    ");
-
-		else if (keyCode == KeyEvent.VK_SHIFT) return;
-		else {
-			char keyChar = e.getKeyChar();
-			this.insertCharacter(keyChar);
+			case KeyEvent.VK_SHIFT:
+				break;
+			default:
+				char keyChar = e.getKeyChar();
+				this.insertCharacter(keyChar);
 		}
+	}
+
+	protected void setCursorX(int x) {
+		this.cursorX = x;
+	}
+
+	protected void setCursorY(int y) {
+		this.cursorY = y;
 	}
 
 	protected void moveCursorUp() {

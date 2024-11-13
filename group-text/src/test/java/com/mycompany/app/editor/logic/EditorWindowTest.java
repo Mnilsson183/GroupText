@@ -11,6 +11,98 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class EditorWindowTest {
 
 	@Test
+	public void moveCursorUpTest() {
+		EditorWindow eWindow = new EditorWindow();
+
+		eWindow.moveCursorUp();
+		assertEquals(0, eWindow.getCursorY());		// move cursor up when already at the top
+
+		eWindow.insertNewline();
+		eWindow.setCursorY(1);
+		assertEquals(1, eWindow.getCursorY());
+		eWindow.moveCursorUp();
+		assertEquals(0, eWindow.getCursorY());		// you can move the cursor directly up
+
+		eWindow.setCursorY(1);
+		eWindow.insertCharacter('x', 0, 0);
+		eWindow.insertCharacter('x', 0, 0);
+		eWindow.moveCursorUp();
+		assertEquals(0, eWindow.getCursorX());		// you can move the cursor straight up onto a line larger than the current line and 
+								// and keep the cursor x value
+
+		eWindow.insertNewline(0);
+		eWindow.setCursorY(1);
+		eWindow.setCursorX(2);
+		eWindow.moveCursorUp();
+		assertEquals(0, eWindow.getCursorX());		// you can move from a larger line to a smaller and the cursor will go to the bottom
+	}
+
+	@Test 
+	public void moveCursorDownTest() {
+		EditorWindow eWindow = new EditorWindow();
+
+		eWindow.moveCursorDown();
+		assertEquals(0, eWindow.getCursorY());		// move cursor up when already at the top
+		
+		eWindow.insertNewline(0);
+		eWindow.moveCursorDown();
+		assertEquals(1, eWindow.getCursorY());		// you can move the cursor straight downwards
+
+		eWindow.insertCharacter('x', 0, 1);
+		eWindow.insertCharacter('x', 0, 1);
+		eWindow.setCursorY(0);
+		eWindow.moveCursorDown();
+		assertEquals(0, eWindow.getCursorX());		// moving the cursor straght up
+
+		eWindow.insertNewline(2);
+		eWindow.setCursorX(2);
+		eWindow.moveCursorDown();
+		assertEquals(0, eWindow.getCursorX());		// you can move the cursor down from a larger cursor x val to a smaller
+	}
+
+	@Test 
+	public void moveCursorRightTest() {
+		EditorWindow eWindow = new EditorWindow();
+		eWindow.moveCursorRight();
+		assertEquals(0, eWindow.getCursorX());		// moving right at the end of a line with no line under it will not do anything
+		assertEquals(0, eWindow.getCursorY());
+
+
+		eWindow.insertNewline(1);
+		eWindow.moveCursorRight();
+		assertEquals(0, eWindow.getCursorX());
+		assertEquals(1, eWindow.getCursorY());		// moving right at end of line with line under moves the cursor to zero spot on the next line
+		
+		eWindow.insertCharacter('x', 0, 0);
+		eWindow.insertCharacter('x', 0, 0);
+		eWindow.insertCharacter('x', 0, 0);
+		eWindow.setCursorY(0);
+		assertEquals(0, eWindow.getCursorX());
+		eWindow.moveCursorRight();
+		assertEquals(1, eWindow.getCursorX());
+		eWindow.moveCursorRight();
+		assertEquals(2, eWindow.getCursorX());		// regular right cursor movement
+	}
+
+	@Test 
+	public void moveCursorLeftTest() {
+		EditorWindow eWindow = new EditorWindow();
+		eWindow.moveCursorLeft();
+		assertEquals(0, eWindow.getCursorX());		// moving left at begaining of line doesnt do anything
+		
+		eWindow.insertCharacter('x', 0, 0);
+		eWindow.insertCharacter('x', 0, 0);
+		eWindow.insertCharacter('x', 0, 0);
+		eWindow.setCursorX(2);
+		assertEquals(2, eWindow.getCursorX());
+		eWindow.moveCursorLeft();
+		assertEquals(1, eWindow.getCursorX());
+		eWindow.moveCursorLeft();
+		assertEquals(0, eWindow.getCursorX());
+		eWindow.moveCursorLeft();			// regular cursor movement
+	}
+
+	@Test
 	public void insertCharacterTest() {
 		EditorWindow eWindow = new EditorWindow();
 		eWindow.insertCharacter('c', 0, 0);
