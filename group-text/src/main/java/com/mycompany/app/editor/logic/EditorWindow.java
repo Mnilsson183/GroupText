@@ -102,7 +102,7 @@ public class EditorWindow {
 				break;
 
 			case KeyEvent.VK_BACK_SPACE:
-				this.removeCharacter();
+				this.backspace();
 				break;
 
 			case KeyEvent.VK_ENTER:
@@ -177,9 +177,16 @@ public class EditorWindow {
 		this.data.get(y).deleteCharAt(x);
 	}
 
-	protected void removeCharacter() {
-		removeCharacter(this.cursorX-1, this.cursorY);
-		this.cursorX--;
+	protected void backspace() {
+		if (this.cursorX == 0) {
+			if (this.cursorY != 0) {
+				this.cursorY--;
+				this.cursorX = this.data.get(this.cursorY).length();
+			} else return;
+		} else {
+			removeCharacter(this.cursorX-1, this.cursorY);
+			this.cursorX--;
+		}
 	}
 
 	protected void insertNewline(int y) {
