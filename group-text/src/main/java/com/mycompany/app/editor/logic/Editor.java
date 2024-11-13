@@ -1,5 +1,6 @@
 package com.mycompany.app.editor.logic;
 
+import java.awt.event.KeyEvent;
 import java.util.Vector;
 
 import com.mycompany.app.editor.render.GroupTextRender;
@@ -20,8 +21,8 @@ public class Editor {
 		this.users.add(new UserEditor());
 	}
 
-	public void processKeyIn(char c) {
-		System.out.println("Editor processKeyIn not implimented");
+	public void processKeyIn(KeyEvent event) {
+		this.getPrimaryUser().getFocusedWindow().processKeyIn(event);
 	}
 
 	public void runEditor () {
@@ -30,7 +31,7 @@ public class Editor {
 		while (true) {
 			
 
-			renderer.render();
+			//renderer.render();
 		}
 	}
 
