@@ -138,4 +138,22 @@ public class EditorServerTest {
         assertEquals("hi\n\nbye\nhello", server.getLinesToString());
     }
 
+    @Test
+    public void applyFunctionsTest() {
+        EditorServer server;
+        EditorAction action;
+
+        server = new EditorServer("hi\nbye\nhello");
+        action = new EditorAction(0, 0, 'a');
+        server.applyFunction(action);
+        assertEquals("ahi\nbye\nhello", server.getLinesToString());
+        action = new EditorAction(0, 0, 'a');
+        server.applyFunction(action);
+        assertEquals("aahi\nbye\nhello", server.getLinesToString());
+        action = new EditorAction(-1, 0);
+        server.applyFunction(action);
+        assertEquals("bye\nhello", server.getLinesToString());
+
+    }
+
 }

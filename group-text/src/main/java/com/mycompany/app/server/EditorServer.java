@@ -61,7 +61,7 @@ public class EditorServer {
             } else {
                 String line = lines.get(eAction.getY());
                 String newLine = line.substring(0, eAction.getX()) + line.substring(eAction.getX()+1);
-                lines.add(eAction.getY(), newLine);
+                lines.set(eAction.getY(), newLine);
             }
 
         // insert
@@ -73,7 +73,7 @@ public class EditorServer {
             } else {
                 String line = lines.get(eAction.getY());
                 String newLine = line.substring(0, eAction.getX()) + eAction.getChar() + line.substring(eAction.getX());
-                lines.add(eAction.getY(), newLine);
+                lines.set(eAction.getY(), newLine);
             }
         }
     }
