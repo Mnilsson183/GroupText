@@ -1,10 +1,5 @@
 package com.mycompany.app.editor.logic;
 
-import java.awt.event.KeyEvent;
-import java.util.Vector;
-
-import com.mycompany.app.editor.render.GroupTextRender;
-
 /*
  * Editor class
  * Holds all of the data for all users attatched to a session via a get method
@@ -14,32 +9,6 @@ import com.mycompany.app.editor.render.GroupTextRender;
  */
 public class Editor {
 
-	private Vector<UserEditor> users;
-
 	public Editor () {
-		this.users = new Vector<>();
-		this.users.add(new UserEditor());
-	}
-
-	public void processKeyIn(KeyEvent event) {
-		this.getPrimaryUser().getFocusedWindow().processKeyIn(event);
-	}
-
-	public void runEditor () {
-		GroupTextRender renderer = new GroupTextRender(this);
-		renderer.setVisible(true);
-		while (true) {
-			
-
-			//renderer.render();
-		}
-	}
-
-	public UserEditor getPrimaryUser() {
-		return this.users.get(0);
-	}
-
-	public UserEditor getUser(int index) {
-		return this.users.get(index);
 	}
 }
