@@ -1,6 +1,7 @@
 package com.mycompany.app.server;
 
-import com.mycompany.app.server.*;
+import com.mycompany.app.server.EditorServer;
+import com.mycompany.app.server.EditorAction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -2,13 +2,40 @@ package com.mycompany.app.server;
 
 import com.mycompany.app.server.EditorAction;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Vector;
 
 public class EditorServer {
     private Vector<String> lines;
+    int port;
 
     public EditorServer() {
         this.lines = new Vector<>();
+        this.port = 8080;
+    }
+
+    public EditorServer(int port) {
+        this.lines = new Vector<>();
+        this.port = port;
+    }
+
+    public void runServer() {
+        try (ServerSocket serverSocket = new ServerSocket(this.port)) {
+            System.out.println("Server is listening on port: " + port);
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("New client connected: " + clientSocket.getInetAddress());
+
+                ClientHandler clientHandler = new ClientHandler(clientSocket);
+                new Thread(clientHandler).start();
+            }
+        } catch (IOException e) {
+            System.out.println("Server exception: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public EditorServer(String s) {

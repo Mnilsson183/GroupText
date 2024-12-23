@@ -11,6 +11,7 @@ public class App {
         if (args.length != 0) {
             if (args[0].equals("--server") || args[0].equals("-s")) {
                 EditorServer server = new EditorServer();
+                server.runServer();
             } else {
                 Editor editor = new Editor();
                 editor.runEditor();
