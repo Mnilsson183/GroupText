@@ -1,15 +1,28 @@
 package com.mycompany.app.server;
 
-class EditorAction {
+public class EditorAction {
 
     private int x;
     private int y;
     private char c;
 
-    protected EditorAction(int x, int y, char c) {
+    public EditorAction(int x, int y, char c) {
         this.x = x;
         this.y = y;
         this.c = c;
+    }
+
+    public EditorAction(int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.c = '\u0000';
+    }
+
+    // newline insert and delete shortcuts
+    public EditorAction(int y, boolean isInsert) {
+        this.x = -1;
+        this.y = y;
+        this.c = isInsert ? '\u0000' : '0';
     }
 
     public EditorAction(EditorAction act) {

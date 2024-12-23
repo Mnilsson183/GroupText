@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.Buffer;
 import java.util.Vector;
 
 import com.mycompany.app.editor.render.GroupTextRender;
+import com.mycompany.app.server.EditorAction;
 
 /*
  * Editor class
@@ -23,6 +23,9 @@ public class Editor {
 	private Vector<UserEditor> users;
 	String serverAddress;
 	int port = 8000;
+	Socket socket;
+	BufferedReader inputFromServer;
+	PrintWriter outputToServer;
 
 	public Editor () {
 		this.users = new Vector<>();
@@ -46,7 +49,12 @@ public class Editor {
 	}
 
 	public void processKeyIn(KeyEvent event) {
-		this.getPrimaryUser().getFocusedWindow().processKeyIn(event);
+		EditorAction action = this.getPrimaryUser().getFocusedWindow().processKeyIn(event);
+		if (action != null) sendTransformation(action);
+	}
+
+	public void sendTransformation(EditorAction action) {
+		outputToServer.println(action.toString());
 	}
 
 	public void runEditor () {
@@ -55,11 +63,12 @@ public class Editor {
 		renderer.setVisible(true);
 
 		// connect to server
-		try (Socket socket = new Socket(serverAddress, port)) {
+		try {
+			socket = new Socket(serverAddress, port);
 			System.out.println("Connecting to server");
 
-			BufferedReader inputFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintWriter outputToServer = new PrintWriter(socket.getOutputStream(), true);
+			inputFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			outputToServer = new PrintWriter(socket.getOutputStream(), true);
 
 			outputToServer.println("Hello Server");
 

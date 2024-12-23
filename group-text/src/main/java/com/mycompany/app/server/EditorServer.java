@@ -9,15 +9,16 @@ import java.util.Vector;
 
 public class EditorServer {
     private Vector<String> lines;
-    int port;
+    int port = 8080;
 
     public EditorServer() {
         this.lines = new Vector<>();
-        this.port = 8080;
+        this.lines.add("");
     }
 
     public EditorServer(int port) {
         this.lines = new Vector<>();
+        this.lines.add("");
         this.port = port;
     }
 
@@ -29,7 +30,7 @@ public class EditorServer {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("New client connected: " + clientSocket.getInetAddress());
 
-                ClientHandler clientHandler = new ClientHandler(clientSocket);
+                ClientHandler clientHandler = new ClientHandler(clientSocket, this);
                 new Thread(clientHandler).start();
             }
         } catch (IOException e) {
@@ -54,33 +55,25 @@ public class EditorServer {
         // delete
         // if y = some int in range and x = -1 delete line
         if (!eAction.hasChar()) {
-            if (eAction.getY() < 0) throw new IndexOutOfBoundsException("Attempt to index out of bounds on the y");
-            if (eAction.getY() >= lines.size()) throw new IndexOutOfBoundsException("Attempt to index out of bounds on the y");
-            if (eAction.getX() < -1) throw new IndexOutOfBoundsException("Attempt to index out of bounds on the x");
-            if (eAction.getX() >= lines.get(eAction.getY()).length()) throw new IndexOutOfBoundsException("Attempt to index out of bounds on the x");
 
             if (eAction.getX() == -1) {
                 lines.remove(eAction.getY());
             } else {
                 String line = lines.get(eAction.getY());
                 String newLine = line.substring(0, eAction.getX()) + line.substring(eAction.getX()+1);
-                lines.set(eAction.getY(), newLine);
+                lines.add(eAction.getY(), newLine);
             }
 
         // insert
         // if y = some int in range and x = -1 add line
         } else {
-            if (eAction.getY() < 0) throw new IndexOutOfBoundsException("Attempt to index out of bounds on the y");
-            if (eAction.getY() >= lines.size()) throw new IndexOutOfBoundsException("Attempt to index out of bounds on the y");
-            if (eAction.getX() < -1) throw new IndexOutOfBoundsException("Attempt to index out of bounds on the x");
-            if (eAction.getX() > lines.get(eAction.getY()).length()) throw new IndexOutOfBoundsException("Attempt to index out of bounds on the x");
 
             if (eAction.getX() == -1) {
-                lines.insertElementAt("", eAction.getY());
+                lines.add(eAction.getY(), "");
             } else {
                 String line = lines.get(eAction.getY());
                 String newLine = line.substring(0, eAction.getX()) + eAction.getChar() + line.substring(eAction.getX());
-                lines.set(eAction.getY(), newLine);
+                lines.add(eAction.getY(), newLine);
             }
         }
     }

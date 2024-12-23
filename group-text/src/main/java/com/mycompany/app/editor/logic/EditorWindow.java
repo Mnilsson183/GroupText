@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.awt.event.KeyEvent;
+import com.mycompany.app.server.EditorAction;
 
 /**
  * EditorWindow
@@ -84,39 +85,37 @@ public class EditorWindow {
 
 
 
-	public void processKeyIn(KeyEvent e) {
+	public EditorAction processKeyIn(KeyEvent e) {
 		// System.out.println("Key pressed: " + e.getKeyChar() + " Key-val pressed: " + (int)e.getKeyChar());
 		int keyCode = e.getKeyCode();
 		switch (keyCode) {
 			case KeyEvent.VK_UP:
 				this.moveCursorUp();
-				break;
+				return null;
 			case KeyEvent.VK_DOWN:
 				this.moveCursorDown();
-				break;
+				return null;
 			case KeyEvent.VK_RIGHT:
 				this.moveCursorRight();
-				break;
+				return null;
 			case KeyEvent.VK_LEFT:
 				this.moveCursorLeft();
-				break;
+				return null;
 
 			case KeyEvent.VK_BACK_SPACE:
-				this.backspace();
-				break;
+				return this.backspace();
 
 			case KeyEvent.VK_ENTER:
-				this.insertNewline();
-				break;
+				return this.insertNewline();
 			case KeyEvent.VK_TAB:
 				System.out.println("Tab not implemented");
-				break;
+				return null;
 
 			case KeyEvent.VK_SHIFT:
-				break;
+				return null;
 			default:
 				char keyChar = e.getKeyChar();
-				this.insertCharacter(keyChar);
+				return this.insertCharacter(keyChar);
 		}
 	}
 
@@ -162,9 +161,10 @@ public class EditorWindow {
 		this.data.get(y).insert(x, c);
 	}
 
-	protected void insertCharacter(char c) {
+	protected EditorAction insertCharacter(char c) {
 		insertCharacter(c, this.cursorX, this.cursorY);
 		this.cursorX++;
+		return new EditorAction(this.cursorX-1, this.cursorY, c);
 	}
 
 	protected void insertChars(String s) {
@@ -177,29 +177,31 @@ public class EditorWindow {
 		this.data.get(y).deleteCharAt(x);
 	}
 
-	protected void backspace() {
+	protected EditorAction backspace() {
 		if (this.cursorX == 0) {
 			if (this.cursorY != 0) {
 				this.cursorY--;
 				this.cursorX = this.data.get(this.cursorY).length();
-			} else return;
+				return null;
+			} else return null;
 		} else {
 			removeCharacter(this.cursorX-1, this.cursorY);
 			this.cursorX--;
+			return new EditorAction(this.cursorX, this.cursorY);
 		}
 	}
 
-	protected void insertNewline(int y) {
+	protected EditorAction insertNewline(int y) {
 		if (y < 0) throw new ArrayIndexOutOfBoundsException();
-
 		if (y > this.data.size()) this.data.add(new StringBuilder());
 		else this.data.add(y, new StringBuilder());
+		this.cursorX = 0;
+		return new EditorAction(this.cursorY, true);
 	}
 
-	protected void insertNewline() {
-		this.data.add(this.cursorY+1, new StringBuilder());
-		this.cursorY++;
-		this.cursorX = 0;
+	protected EditorAction insertNewline() {
+		// post increments cursor y
+		return insertNewline((this.cursorY++)+1);
 	}
 
 	protected void removeLine(int y) {

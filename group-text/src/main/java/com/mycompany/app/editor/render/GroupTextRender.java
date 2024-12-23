@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import com.mycompany.app.editor.logic.Editor;
 import com.mycompany.app.editor.logic.UserEditor;
+import com.mycompany.app.server.EditorAction;
 
 public class GroupTextRender extends JFrame {
     private JTextArea displayArea;
