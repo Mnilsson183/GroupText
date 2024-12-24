@@ -1,8 +1,5 @@
 package com.mycompany.app.server;
 
-import com.mycompany.app.server.EditorServer;
-import com.mycompany.app.server.EditorAction;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -128,12 +125,12 @@ public class EditorServerTest {
         EditorAction action;
 
         server = new EditorServer("hi\nbye\nhello");
-        action = new EditorAction(-1, 0, 'a');
+        action = new EditorAction(-1, 0, '0');
         server.applyFunction(action);
         assertEquals("\nhi\nbye\nhello", server.getLinesToString());
 
         server = new EditorServer("hi\nbye\nhello");
-        action = new EditorAction(-1, 1, 'a');
+        action = new EditorAction(-1, 1, '0');
         server.applyFunction(action);
         assertEquals("hi\n\nbye\nhello", server.getLinesToString());
     }

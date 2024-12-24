@@ -22,7 +22,7 @@ public class EditorAction {
     public EditorAction(int y, boolean isInsert) {
         this.x = -1;
         this.y = y;
-        this.c = isInsert ? '\u0000' : '0';
+        this.c = isInsert ? '0' : '\u0000';
     }
 
     public EditorAction(EditorAction act) {
@@ -80,5 +80,17 @@ public class EditorAction {
 
     public String toString() {
         return getEditorActionString(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (this.getClass() != obj.getClass()) return false;
+        EditorAction action = (EditorAction)obj;
+        if (this.x != action.x) return false;
+        else if (this.y != action.y) return false;
+        else if (this.c != action.c) return false;
+        return true;
     }
 }

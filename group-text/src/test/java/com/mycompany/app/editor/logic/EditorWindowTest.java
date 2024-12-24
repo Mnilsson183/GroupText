@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.mycompany.app.server.EditorAction;
+
 /**
  * EditorWindowTest
  */
@@ -212,4 +214,18 @@ public class EditorWindowTest {
 		});
 	}
 	
+	@Test
+	public void editorFunctionActionTest() {
+		EditorWindow eWindow = new EditorWindow();
+		EditorAction action;
+
+		action = eWindow.insertCharacter('c');
+		assertEquals(new EditorAction(0, 0, 'c'), action);
+
+		action = eWindow.backspace();
+		assertEquals(new EditorAction(0, 0), action);
+
+		action = eWindow.insertNewline();
+		assertEquals(new EditorAction(-1, 1, '0'), action);
+	}
 }
