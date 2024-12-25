@@ -4,9 +4,9 @@ public class EditorAction {
 
     private int x;
     private int y;
-    private char c;
+    private String c;
 
-    public EditorAction(int x, int y, char c) {
+    public EditorAction(int x, int y, String c) {
         this.x = x;
         this.y = y;
         this.c = c;
@@ -15,14 +15,14 @@ public class EditorAction {
     public EditorAction(int x, int y) {
         this.x = x;
         this.y = y;
-        this.c = '\u0000';
+        this.c = "";
     }
 
     // newline insert and delete shortcuts
     public EditorAction(int y, boolean isInsert) {
         this.x = -1;
         this.y = y;
-        this.c = isInsert ? '0' : '\u0000';
+        this.c = isInsert ? "0" : "";
     }
 
     public EditorAction(EditorAction act) {
@@ -40,12 +40,12 @@ public class EditorAction {
             String[] comps = str.split(",");
             int x = Integer.parseInt(comps[0]);
             int y = Integer.parseInt(comps[1]);
-            if (comps.length == 2) return new EditorAction(x, y, '\u0000');
+            if (comps.length == 2) return new EditorAction(x, y, "");
 
-            char c;
-            if (comps[2].length() == 0) c = '\u0000';
-            else if (comps[2].equals("//")) c = ',';
-            else c = comps[2].charAt(0);
+            String c;
+            if (comps[2].length() == 0) c = "";
+            else if (comps[2].equals("//")) c = ",";
+            else c = comps[2];
 
             return new EditorAction(x, y, c);
         } catch (Exception e) {
@@ -56,7 +56,7 @@ public class EditorAction {
     public static String getEditorActionString(EditorAction action) {
         String s = "" + action.getX() + "," + action.getY();
         if (action.hasChar()) {
-            if (action.getChar() != ',') s += "," + action.getChar();
+            if (action.getValue() != ",") s += "," + action.getValue();
             else s += "," + "//";
         } 
         return s;
@@ -70,12 +70,12 @@ public class EditorAction {
         return y;
     }
 
-    public char getChar() {
+    public String getValue() {
         return c;
     }
 
     public boolean hasChar() {
-        return this.c != '\u0000';
+        return this.c != "";
     }
 
     public String toString() {
@@ -90,7 +90,7 @@ public class EditorAction {
         EditorAction action = (EditorAction)obj;
         if (this.x != action.x) return false;
         else if (this.y != action.y) return false;
-        else if (this.c != action.c) return false;
+        else if (!this.c.equals(action.c)) return false;
         return true;
     }
 }

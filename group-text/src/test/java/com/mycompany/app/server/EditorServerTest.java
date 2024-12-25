@@ -40,13 +40,13 @@ public class EditorServerTest {
         //});
 
         server = new EditorServer("hi\nbye\nhello\nworld");
-        action = new EditorAction(0, 0, '\u0000');
+        action = new EditorAction(0, 0, "");
         server.applyFunction(action);
         assertEquals("i", server.getLines().get(0));
 
 
         server = new EditorServer("hi\nbye\nhello\nworld");
-        action = new EditorAction(1, 1, '\u0000');
+        action = new EditorAction(1, 1, "");
         server.applyFunction(action);
         assertEquals("be", server.getLines().get(1));
 
@@ -83,17 +83,17 @@ public class EditorServerTest {
         //});
 
         server = new EditorServer("hi\nbye\nhello\nworld");
-        action = new EditorAction(1, 1, 'e');
+        action = new EditorAction(1, 1, "e");
         server.applyFunction(action);
         assertEquals("beye", server.getLines().get(1));
 
         server = new EditorServer("hi\nbye\nhello\nworld");
-        action = new EditorAction(0, 0, 'e');
+        action = new EditorAction(0, 0, "e");
         server.applyFunction(action);
         assertEquals("ehi", server.getLines().get(0));
 
         server = new EditorServer("hi\nbye\nhello\nworld");
-        action = new EditorAction(2, 0, 'e');
+        action = new EditorAction(2, 0, "e");
         server.applyFunction(action);
         assertEquals("hie", server.getLines().get(0));
     }
@@ -104,17 +104,17 @@ public class EditorServerTest {
         EditorAction action;
 
         server = new EditorServer("hi\nbye\nhello");
-        action = new EditorAction(-1, 0, '\u0000');
+        action = new EditorAction(-1, 0, "");
         server.applyFunction(action);
         assertEquals("bye\nhello", server.getLinesToString());
 
         server = new EditorServer("hi\nbye\nhello");
-        action = new EditorAction(-1, 1, '\u0000');
+        action = new EditorAction(-1, 1, "");
         server.applyFunction(action);
         assertEquals("hi\nhello", server.getLinesToString());
 
         server = new EditorServer("hi\nbye\nhello");
-        action = new EditorAction(-1, 2, '\u0000');
+        action = new EditorAction(-1, 2, "");
         server.applyFunction(action);
         assertEquals("hi\nbye", server.getLinesToString());
     }
@@ -125,12 +125,12 @@ public class EditorServerTest {
         EditorAction action;
 
         server = new EditorServer("hi\nbye\nhello");
-        action = new EditorAction(-1, 0, '0');
+        action = new EditorAction(-1, 0, "0");
         server.applyFunction(action);
         assertEquals("\nhi\nbye\nhello", server.getLinesToString());
 
         server = new EditorServer("hi\nbye\nhello");
-        action = new EditorAction(-1, 1, '0');
+        action = new EditorAction(-1, 1, "0");
         server.applyFunction(action);
         assertEquals("hi\n\nbye\nhello", server.getLinesToString());
     }
@@ -141,10 +141,10 @@ public class EditorServerTest {
         EditorAction action;
 
         server = new EditorServer("hi\nbye\nhello");
-        action = new EditorAction(0, 0, 'a');
+        action = new EditorAction(0, 0, "a");
         server.applyFunction(action);
         assertEquals("ahi\nbye\nhello", server.getLinesToString());
-        action = new EditorAction(0, 0, 'a');
+        action = new EditorAction(0, 0, "a");
         server.applyFunction(action);
         assertEquals("aahi\nbye\nhello", server.getLinesToString());
         action = new EditorAction(-1, 0);

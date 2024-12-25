@@ -103,7 +103,7 @@ public class EditorWindow {
         	        data.add(action.getY(), new StringBuilder(""));
         	    } else {
         	        String line = data.get(action.getY()).toString();
-        	        String newLine = line.substring(0, action.getX()) + action.getChar() + line.substring(action.getX());
+        	        String newLine = line.substring(0, action.getX()) + action.getValue() + line.substring(action.getX());
         	        data.set(action.getY(), new StringBuilder(newLine));
         	    }
         	}
@@ -189,7 +189,7 @@ public class EditorWindow {
 	protected EditorAction insertCharacter(char c) {
 		insertCharacter(c, this.cursorX, this.cursorY);
 		this.cursorX++;
-		return new EditorAction(this.cursorX-1, this.cursorY, c);
+		return new EditorAction(this.cursorX-1, this.cursorY, "" + c);
 	}
 
 	protected void insertChars(String s) {
