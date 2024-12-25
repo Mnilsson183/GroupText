@@ -1,15 +1,28 @@
 package com.mycompany.app.server;
 
-class EditorAction {
+public class EditorAction {
 
     private int x;
     private int y;
     private char c;
 
-    protected EditorAction(int x, int y, char c) {
+    public EditorAction(int x, int y, char c) {
         this.x = x;
         this.y = y;
         this.c = c;
+    }
+
+    public EditorAction(int x, int y) {
+        this.x = x;
+        this.y = y;
+        this.c = '\u0000';
+    }
+
+    // newline insert and delete shortcuts
+    public EditorAction(int y, boolean isInsert) {
+        this.x = -1;
+        this.y = y;
+        this.c = isInsert ? '0' : '\u0000';
     }
 
     public EditorAction(EditorAction act) {
@@ -22,7 +35,7 @@ class EditorAction {
         this(parseEditorAction(str));
     }
 
-    public static EditorAction parseEditorAction(String str) throws IllegalArgumentException {
+    public static EditorAction parseEditorAction(String str) {
         try {
             String[] comps = str.split(",");
             int x = Integer.parseInt(comps[0]);
@@ -36,7 +49,7 @@ class EditorAction {
 
             return new EditorAction(x, y, c);
         } catch (Exception e) {
-            throw new IllegalArgumentException();
+            throw e;
         }
     }
 
@@ -67,5 +80,17 @@ class EditorAction {
 
     public String toString() {
         return getEditorActionString(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (this.getClass() != obj.getClass()) return false;
+        EditorAction action = (EditorAction)obj;
+        if (this.x != action.x) return false;
+        else if (this.y != action.y) return false;
+        else if (this.c != action.c) return false;
+        return true;
     }
 }
