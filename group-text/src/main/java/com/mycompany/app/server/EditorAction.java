@@ -35,7 +35,7 @@ public class EditorAction {
         this(parseEditorAction(str));
     }
 
-    public static EditorAction parseEditorAction(String str) throws IllegalArgumentException {
+    public static EditorAction parseEditorAction(String str) {
         try {
             String[] comps = str.split(",");
             int x = Integer.parseInt(comps[0]);
@@ -49,7 +49,7 @@ public class EditorAction {
 
             return new EditorAction(x, y, c);
         } catch (Exception e) {
-            throw new IllegalArgumentException();
+            throw e;
         }
     }
 

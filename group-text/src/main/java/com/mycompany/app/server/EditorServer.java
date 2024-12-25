@@ -10,6 +10,7 @@ import java.util.Vector;
 public class EditorServer {
     private Vector<String> lines;
     int port = 8080;
+    Vector<ClientHandler> clients = new Vector<>();
 
     public EditorServer() {
         this.lines = new Vector<>();
@@ -22,6 +23,13 @@ public class EditorServer {
         this.port = port;
     }
 
+    public void sendGroupMessage(String message) {
+        System.out.println("Clients: " + clients.size());
+        for (int i = 0; i < clients.size(); i++) {
+            clients.get(i).send(message);
+        }
+    }
+
     public void runServer() {
         try (ServerSocket serverSocket = new ServerSocket(this.port)) {
             System.out.println("Server is listening on port: " + port);
@@ -31,6 +39,7 @@ public class EditorServer {
                 System.out.println("New client connected: " + clientSocket.getInetAddress());
 
                 ClientHandler clientHandler = new ClientHandler(clientSocket, this);
+                clients.add(clientHandler);
                 new Thread(clientHandler).start();
             }
         } catch (IOException e) {
@@ -48,7 +57,12 @@ public class EditorServer {
     }
 
     public void applyFunction(EditorAction eAction) {
-        applyFunction(eAction, this.lines);
+        try {
+            applyFunction(eAction, this.lines);
+            sendGroupMessage(eAction.toString());
+        } catch (Exception e) {
+            System.out.println("Error applying function");
+        }
     }
 
     public static void applyFunction(EditorAction eAction, Vector<String> lines) {

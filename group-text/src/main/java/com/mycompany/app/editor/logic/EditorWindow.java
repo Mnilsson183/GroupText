@@ -83,7 +83,32 @@ public class EditorWindow {
 	}
 
 
+	public void applyTranslation(EditorAction action) {
+        	// if y = some int in range and x = -1 delete line
+        	if (!action.hasChar()) {
 
+        	    if (action.getX() == -1) {
+        	        data.remove(action.getY());
+        	    } else {
+        	        String line = data.get(action.getY()).toString();
+        	        StringBuilder newLine = new StringBuilder(line.substring(0, action.getX()) + line.substring(action.getX()+1));
+        	        data.set(action.getY(), newLine);
+        	    }
+
+        	// insert
+        	// if y = some int in range and x = -1 add line
+        	} else {
+
+        	    if (action.getX() == -1) {
+        	        data.add(action.getY(), new StringBuilder(""));
+        	    } else {
+        	        String line = data.get(action.getY()).toString();
+        	        String newLine = line.substring(0, action.getX()) + action.getChar() + line.substring(action.getX());
+        	        data.set(action.getY(), new StringBuilder(newLine));
+        	    }
+        	}
+
+	}
 
 	public EditorAction processKeyIn(KeyEvent e) {
 		// System.out.println("Key pressed: " + e.getKeyChar() + " Key-val pressed: " + (int)e.getKeyChar());
@@ -180,9 +205,14 @@ public class EditorWindow {
 	protected EditorAction backspace() {
 		if (this.cursorX == 0) {
 			if (this.cursorY != 0) {
-				this.cursorY--;
-				this.cursorX = this.data.get(this.cursorY).length();
-				return null;
+				StringBuilder sb = data.get(cursorY);
+				if (sb.length() != 0) {
+					data.get(cursorY-1).append(sb);
+				}
+				int sbLength = sb.length();
+				this.data.remove(this.cursorY);
+				this.cursorX = sbLength;
+				return new EditorAction((this.cursorY--), false);
 			} else return null;
 		} else {
 			removeCharacter(this.cursorX-1, this.cursorY);
