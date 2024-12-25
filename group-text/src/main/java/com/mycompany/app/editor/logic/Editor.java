@@ -48,6 +48,10 @@ public class Editor {
 	public void processKeyIn(KeyEvent event) {
 		EditorAction action = this.getPrimaryUser().getFocusedWindow().processKeyIn(event);
 		if (action != null) sendTransformation(action);
+		if (this.getPrimaryUser().getFocusedWindow().hasSecondaryAction()) {
+			sendTransformation(getPrimaryUser().getFocusedWindow().getSecondaryAction());
+			getPrimaryUser().getFocusedWindow().nullSecondaryAction();
+		}
 	}
 
 	public void applyTransformation(String s) {
@@ -82,8 +86,6 @@ public class Editor {
 			System.out.println("Connected to server");
 			
 			serverHandler = new ServerHandler(socket, this);
-
-			serverHandler.send("Hello server");
 
 			serverHandler.listen();
 		} catch (IOException e) {
