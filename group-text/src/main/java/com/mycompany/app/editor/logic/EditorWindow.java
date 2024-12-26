@@ -17,6 +17,7 @@ public class EditorWindow {
 	private String fileExtention;
 
 	private ArrayList<StringBuilder> data;
+	private EditorAction secondaryAction = null;
 
 	EditorWindow () {
 		// default window open
@@ -82,6 +83,18 @@ public class EditorWindow {
 		return ret;
 	}
 
+	public EditorAction getSecondaryAction() {
+		return this.secondaryAction;
+	}
+
+	public boolean hasSecondaryAction() {
+		return this.secondaryAction != null;
+	}
+
+	public void nullSecondaryAction() {
+		this.secondaryAction = null;
+	}
+
 
 	public void applyTranslation(EditorAction action) {
         	// if y = some int in range and x = -1 delete line
@@ -103,7 +116,7 @@ public class EditorWindow {
         	        data.add(action.getY(), new StringBuilder(""));
         	    } else {
         	        String line = data.get(action.getY()).toString();
-        	        String newLine = line.substring(0, action.getX()) + action.getChar() + line.substring(action.getX());
+        	        String newLine = line.substring(0, action.getX()) + action.getValue() + line.substring(action.getX());
         	        data.set(action.getY(), new StringBuilder(newLine));
         	    }
         	}
@@ -111,7 +124,7 @@ public class EditorWindow {
 	}
 
 	public EditorAction processKeyIn(KeyEvent e) {
-		// System.out.println("Key pressed: " + e.getKeyChar() + " Key-val pressed: " + (int)e.getKeyChar());
+		System.out.println("Key pressed: " + e.getKeyChar() + " Key-val pressed: " + (int)e.getKeyChar());
 		int keyCode = e.getKeyCode();
 		switch (keyCode) {
 			case KeyEvent.VK_UP:
@@ -189,7 +202,7 @@ public class EditorWindow {
 	protected EditorAction insertCharacter(char c) {
 		insertCharacter(c, this.cursorX, this.cursorY);
 		this.cursorX++;
-		return new EditorAction(this.cursorX-1, this.cursorY, c);
+		return new EditorAction(this.cursorX-1, this.cursorY, "" + c);
 	}
 
 	protected void insertChars(String s) {
@@ -207,6 +220,7 @@ public class EditorWindow {
 			if (this.cursorY != 0) {
 				StringBuilder sb = data.get(cursorY);
 				if (sb.length() != 0) {
+					secondaryAction = new EditorAction(data.get(cursorY-1).length(), cursorY-1, sb.toString());
 					data.get(cursorY-1).append(sb);
 				}
 				int sbLength = sb.length();

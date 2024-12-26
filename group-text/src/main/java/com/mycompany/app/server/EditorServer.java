@@ -24,7 +24,6 @@ public class EditorServer {
     }
 
     public void sendGroupMessage(String message) {
-        System.out.println("Clients: " + clients.size());
         for (int i = 0; i < clients.size(); i++) {
             clients.get(i).send(message);
         }
@@ -86,7 +85,7 @@ public class EditorServer {
                 lines.add(eAction.getY(), "");
             } else {
                 String line = lines.get(eAction.getY());
-                String newLine = line.substring(0, eAction.getX()) + eAction.getChar() + line.substring(eAction.getX());
+                String newLine = line.substring(0, eAction.getX()) + eAction.getValue() + line.substring(eAction.getX());
                 lines.set(eAction.getY(), newLine);
             }
         }

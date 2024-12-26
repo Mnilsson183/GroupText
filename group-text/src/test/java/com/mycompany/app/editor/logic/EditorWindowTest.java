@@ -220,12 +220,12 @@ public class EditorWindowTest {
 		EditorAction action;
 
 		action = eWindow.insertCharacter('c');
-		assertEquals(new EditorAction(0, 0, 'c'), action);
+		assertEquals(new EditorAction(0, 0, "c"), action);
 
 		action = eWindow.backspace();
 		assertEquals(new EditorAction(0, 0), action);
 
 		action = eWindow.insertNewline();
-		assertEquals(new EditorAction(-1, 1, '0'), action);
+		assertEquals(new EditorAction(-1, 1, "0"), action);
 	}
 }

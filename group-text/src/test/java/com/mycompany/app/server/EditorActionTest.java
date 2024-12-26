@@ -20,7 +20,7 @@ public class EditorActionTest {
         action = EditorAction.parseEditorAction(s);
         assertEquals(2, action.getX());
         assertEquals(3, action.getY());
-        assertEquals('c', action.getChar());
+        assertEquals("c", action.getValue());
 
         s = "2,3";
         action = EditorAction.parseEditorAction(s);
@@ -50,20 +50,20 @@ public class EditorActionTest {
         action = EditorAction.parseEditorAction(s);
         assertEquals(2, action.getX());
         assertEquals(3, action.getY());
-        assertEquals(',', action.getChar());
+        assertEquals(",", action.getValue());
     }
 
     @Test
     public void getEditorActionStringTest() {
         EditorAction action;
 
-        action = new EditorAction(2, 3, 'c');
+        action = new EditorAction(2, 3, "c");
         assertEquals("2,3,c", EditorAction.getEditorActionString(action));
 
-        action = new EditorAction(2, 3, '\u0000');
+        action = new EditorAction(2, 3, "");
         assertEquals("2,3", EditorAction.getEditorActionString(action));
 
-        action = new EditorAction(2, 3, ',');
+        action = new EditorAction(2, 3, ",");
         assertEquals("2,3,//", EditorAction.getEditorActionString(action));
     }
 
