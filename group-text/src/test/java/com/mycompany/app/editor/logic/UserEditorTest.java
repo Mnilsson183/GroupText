@@ -15,7 +15,7 @@ public class UserEditorTest {
 	@Test
 	public void getAllWindowFilenamesTest() {
 		UserEditor uEditor = new UserEditor("test1.txt");
-		uEditor.addWindow(new EditorWindow("test2.txt"));
+		uEditor.addWindow(new EditorBuffer("test2.txt"));
 
 		ArrayList<String> filenames = uEditor.getAllWindowFilenames();
 		assertEquals("test1.txt", filenames.get(0));

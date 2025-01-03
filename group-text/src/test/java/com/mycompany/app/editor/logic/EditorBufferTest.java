@@ -10,11 +10,11 @@ import com.mycompany.app.server.EditorAction;
 /**
  * EditorWindowTest
  */
-public class EditorWindowTest {
+public class EditorBufferTest {
 
 	@Test
 	public void moveCursorUpTest() {
-		EditorWindow eWindow = new EditorWindow();
+		EditorBuffer eWindow = new EditorBuffer();
 
 		eWindow.moveCursorUp();
 		assertEquals(0, eWindow.getCursorY());		// move cursor up when already at the top
@@ -41,7 +41,7 @@ public class EditorWindowTest {
 
 	@Test 
 	public void moveCursorDownTest() {
-		EditorWindow eWindow = new EditorWindow();
+		EditorBuffer eWindow = new EditorBuffer();
 
 		eWindow.moveCursorDown();
 		assertEquals(0, eWindow.getCursorY());		// move cursor up when already at the top
@@ -64,7 +64,7 @@ public class EditorWindowTest {
 
 	@Test 
 	public void moveCursorRightTest() {
-		EditorWindow eWindow = new EditorWindow();
+		EditorBuffer eWindow = new EditorBuffer();
 		eWindow.moveCursorRight();
 		assertEquals(0, eWindow.getCursorX());		// moving right at the end of a line with no line under it will not do anything
 		assertEquals(0, eWindow.getCursorY());
@@ -88,7 +88,7 @@ public class EditorWindowTest {
 
 	@Test 
 	public void moveCursorLeftTest() {
-		EditorWindow eWindow = new EditorWindow();
+		EditorBuffer eWindow = new EditorBuffer();
 		eWindow.moveCursorLeft();
 		assertEquals(0, eWindow.getCursorX());		// moving left at begaining of line doesnt do anything
 		
@@ -106,7 +106,7 @@ public class EditorWindowTest {
 
 	@Test
 	public void insertCharacterTest() {
-		EditorWindow eWindow = new EditorWindow();
+		EditorBuffer eWindow = new EditorBuffer();
 		eWindow.insertCharacter('c', 0, 0);
 		assertEquals("c", eWindow.getLine(0));
 		assertEquals(0, eWindow.getCursorY());
@@ -156,7 +156,7 @@ public class EditorWindowTest {
 
 	@Test
 	public void removeCharacter() {
-		EditorWindow eWindow = new EditorWindow();
+		EditorBuffer eWindow = new EditorBuffer();
 		eWindow.insertCharacter('c', 0, 0);
 		eWindow.removeCharacter(0, 0);
 		assertEquals("", eWindow.getLine(0));
@@ -177,7 +177,7 @@ public class EditorWindowTest {
 
 	@Test
 	public void insertNewlineTest() {
-		EditorWindow eWindow = new EditorWindow();
+		EditorBuffer eWindow = new EditorBuffer();
 		eWindow.insertCharacter('c', 0, 0);
 		eWindow.insertNewline(1);
 		eWindow.insertCharacter('d', 0, 1);
@@ -204,7 +204,7 @@ public class EditorWindowTest {
 
 	@Test
 	public void removeLineTest() {
-		EditorWindow eWindow = new EditorWindow();
+		EditorBuffer eWindow = new EditorBuffer();
 		eWindow.removeLine(0);
 
 		eWindow.insertNewline(0);
@@ -216,7 +216,7 @@ public class EditorWindowTest {
 	
 	@Test
 	public void editorFunctionActionTest() {
-		EditorWindow eWindow = new EditorWindow();
+		EditorBuffer eWindow = new EditorBuffer();
 		EditorAction action;
 
 		action = eWindow.insertCharacter('c');

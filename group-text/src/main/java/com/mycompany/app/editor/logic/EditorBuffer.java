@@ -9,7 +9,7 @@ import com.mycompany.app.server.EditorAction;
 /**
  * EditorWindow
  */
-public class EditorWindow {
+public class EditorBuffer {
 	private int cursorX;
 	private int cursorY;
 
@@ -19,7 +19,7 @@ public class EditorWindow {
 	private ArrayList<StringBuilder> data;
 	private EditorAction secondaryAction = null;
 
-	EditorWindow () {
+	EditorBuffer () {
 		// default window open
 		this.cursorX = 0;
 		this.cursorY = 0;
@@ -31,7 +31,7 @@ public class EditorWindow {
 		this.data.add(new StringBuilder());
 	}
 
-	EditorWindow (String newFilename) {
+	EditorBuffer (String newFilename) {
 		this.cursorX = 0;
 		this.cursorY = 0;
 
@@ -42,7 +42,7 @@ public class EditorWindow {
 		this.data = new ArrayList<>();
 	}
 
-	EditorWindow (EditorWindow window) {
+	EditorBuffer (EditorBuffer window) {
 		this.cursorX = window.getCursorX();
 		this.cursorY = window.getCursorY();
 
@@ -253,7 +253,7 @@ public class EditorWindow {
 		this.data.remove(y);
 	}
 
-	public boolean equals(EditorWindow window) {
+	public boolean equals(EditorBuffer window) {
 		if (this.filename != window.filename) return false;
 		if (this.cursorX != window.cursorX) return false;
 		if (this.cursorY != window.cursorY) return false;
