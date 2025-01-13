@@ -1,4 +1,5 @@
-package com.mycompany.app.editor.render;
+
+package com.mycompany.app.editor.userInterface;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,15 +7,16 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 import com.mycompany.app.editor.logic.Editor;
-import com.mycompany.app.editor.logic.EditorBuffer;
 import com.mycompany.app.server.EditorAction;
 
-public class GroupTextRender extends JFrame {
+import com.mycompany.app.editor.logic.utils.NotImplementedException;
+
+public class GroupTextUserInterface extends JFrame {
     private JTextArea displayArea;
     private Editor editor;
     private JPanel mainPanel;
 
-    public GroupTextRender(Editor editor) {
+    public GroupTextUserInterface(Editor editor) {
         this.editor = editor;
         setTitle("Custom Text Editor");
         setSize(500, 400);
@@ -45,25 +47,30 @@ public class GroupTextRender extends JFrame {
         mainPanel.repaint(); // Trigger a repaint to update the display
     }
 
+    public void render(Graphics g) {
+        throw new NotImplementedException();
+    }
+
     public void updateDisplay() {
         mainPanel.repaint();
     }
 
 
-    public void render(Graphics g) {
-        EditorBuffer currEditorBuffer = editor.getCurrEditor();
-        ArrayList<String> lines = currEditorBuffer.getData();
-        int cursorX = currEditorBuffer.getCursorX();
-        int cursorY = currEditorBuffer.getCursorY();
+    //public void render(Graphics g) {
+    //    UserEditor primaryUser = editor.getPrimaryUser();
+    //    ArrayList<String> lines = primaryUser.getFocusedWindowData();
+    //    ArrayList<String> filenames = primaryUser.getAllWindowFilenames();
+    //    int cursorX = primaryUser.getFocusedWindowCursorX();
+    //    int cursorY = primaryUser.getFocusedWindowCursorY();
 
-        g.setColor(Color.BLACK);
-        g.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        for (int i = 0; i < lines.size(); i++) {
-            g.drawString(lines.get(i), 10, 20 + i * 15);
-        }
+    //    g.setColor(Color.BLACK);
+    //    g.setFont(new Font("Monospaced", Font.PLAIN, 12));
+    //    for (int i = 0; i < lines.size(); i++) {
+    //        g.drawString(lines.get(i), 10, 20 + i * 15);
+    //    }
 
-        // Draw cursor
-        g.setColor(Color.RED);
-        g.fillRect(10 + cursorX * 7, 8 + cursorY * 15, 2, 14);
-    }
+    //    // Draw cursor
+    //    g.setColor(Color.RED);
+    //    g.fillRect(10 + cursorX * 7, 8 + cursorY * 15, 2, 14);
+    //}
 }

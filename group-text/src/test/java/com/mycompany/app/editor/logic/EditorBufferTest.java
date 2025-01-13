@@ -137,19 +137,19 @@ public class EditorBufferTest {
 		assertEquals(3, eWindow.getCursorX());
 		assertEquals(5, eWindow.getLine(0).length());
 
-		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
 			eWindow.insertCharacter('c', -1, 0);
 		});
 
-		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
 			eWindow.insertCharacter('c', 100, 0);
 		});
 
-		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
 			eWindow.insertCharacter('c', 0, -1);
 		});
 
-		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
 			eWindow.insertCharacter('c', 0, 100);
 		});
 	}
@@ -161,16 +161,16 @@ public class EditorBufferTest {
 		eWindow.removeCharacter(0, 0);
 		assertEquals("", eWindow.getLine(0));
 
-		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
 			eWindow.removeCharacter(-1, 0);
 		});
-		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
 			eWindow.removeCharacter(100, 0);
 		});
-		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
 			eWindow.removeCharacter(0, -1);
 		});
-		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
 			eWindow.removeCharacter(0, 100);
 		});
 	}
@@ -197,7 +197,7 @@ public class EditorBufferTest {
 		eWindow.insertNewline(100);
 		assertEquals("", eWindow.getLine(2));
 
-		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
 			eWindow.insertNewline(-1);
 		});
 	}
@@ -209,7 +209,7 @@ public class EditorBufferTest {
 
 		eWindow.insertNewline(0);
 
-		assertThrows(ArrayIndexOutOfBoundsException.class, () -> {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
 			eWindow.removeLine(1000);
 		});
 	}

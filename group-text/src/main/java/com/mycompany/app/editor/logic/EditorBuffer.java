@@ -1,10 +1,13 @@
 package com.mycompany.app.editor.logic;
 
-import java.io.File;
+import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+
 import com.mycompany.app.server.EditorAction;
+import com.mycompany.app.editor.logic.ServerHandler;
+import com.mycompany.app.editor.logic.utils.NotImplementedException;
 
 /**
  * EditorWindow
@@ -19,40 +22,29 @@ public class EditorBuffer {
 	private ArrayList<StringBuilder> data;
 	private EditorAction secondaryAction = null;
 
-	EditorBuffer () {
-		// default window open
-		this.cursorX = 0;
-		this.cursorY = 0;
+	private Editor editor;
 
-		this.filename = "NewFile.txt";
-		//this.fileExtention = "txt";
+	private String serverAddress;
+	private int port;
 
+	private ServerHandler serverHandler;
+
+	// this sucks fix it
+	private EditorAction lastAction;
+
+	protected EditorBuffer() {
 		this.data = new ArrayList<>();
 		this.data.add(new StringBuilder());
+		this.serverAddress = "localhost";
+		this.port = 8080;
 	}
 
-	EditorBuffer (String newFilename) {
-		this.cursorX = 0;
-		this.cursorY = 0;
-
-		this.filename = new String(newFilename);
-		//String[] components = filename.split(".");
-		//this.fileExtention = components[components.length - 1];
-
+	public EditorBuffer (String address, int port, Editor editor) {
 		this.data = new ArrayList<>();
-	}
-
-	EditorBuffer (EditorBuffer window) {
-		this.cursorX = window.getCursorX();
-		this.cursorY = window.getCursorY();
-
-		this.filename = window.getFilename();
-		//this.fileExtention = window.getFileExtention();
-
-		this.data = new ArrayList<>();
-		for (StringBuilder sb : window.data) {
-			this.data.add(new StringBuilder(sb));
-		}
+		this.data.add(new StringBuilder());
+		this.serverAddress = address;
+		this.port = port;
+		this.editor = editor;
 	}
 
 	public int getCursorX () {
@@ -95,8 +87,31 @@ public class EditorBuffer {
 		this.secondaryAction = null;
 	}
 
+	public void init() {
+		try {
+			System.out.println("Connecting to server " + serverAddress + " port: " + port);
+			
+			serverHandler = new ServerHandler(serverAddress, port, this);
 
-	public void applyTranslation(EditorAction action) {
+			new Thread(serverHandler).start();
+
+		} catch (IOException e) {
+			System.out.println("Error creating server handler");
+			e.printStackTrace();
+		}
+	}
+
+	public void sendTransformation(EditorAction action) {
+		serverHandler.send(action.toString());
+		this.lastAction = action;
+	}
+
+	public void applyTransformation(EditorAction action) {
+		if (action.equals(lastAction)) {
+			System.out.println("this is my last action");
+			return;
+		}
+
         	// if y = some int in range and x = -1 delete line
         	if (!action.hasChar()) {
 
@@ -120,22 +135,33 @@ public class EditorBuffer {
         	        data.set(action.getY(), new StringBuilder(newLine));
         	    }
         	}
-
 	}
 
-	public EditorAction processKeyIn(KeyEvent e) {
+	public void processKeyIn(KeyEvent event) {
+		EditorAction action = parseKeyEventToEditorAction(event);
+		if (action != null) sendTransformation(action);
+		if (this.secondaryAction != null) {
+			sendTransformation(action);
+			secondaryAction = null;
+		}
+	}
+
+	private EditorAction parseKeyEventToEditorAction(KeyEvent e) {
 		System.out.println("Key pressed: " + e.getKeyChar() + " Key-val pressed: " + (int)e.getKeyChar());
 		int keyCode = e.getKeyCode();
 		switch (keyCode) {
 			case KeyEvent.VK_UP:
 				this.moveCursorUp();
 				return null;
+
 			case KeyEvent.VK_DOWN:
 				this.moveCursorDown();
 				return null;
+
 			case KeyEvent.VK_RIGHT:
 				this.moveCursorRight();
 				return null;
+
 			case KeyEvent.VK_LEFT:
 				this.moveCursorLeft();
 				return null;
@@ -146,8 +172,7 @@ public class EditorBuffer {
 			case KeyEvent.VK_ENTER:
 				return this.insertNewline();
 			case KeyEvent.VK_TAB:
-				System.out.println("Tab not implemented");
-				return null;
+				throw new NotImplementedException();
 
 			case KeyEvent.VK_SHIFT:
 				return null;
@@ -194,8 +219,6 @@ public class EditorBuffer {
 	}
 
 	protected void insertCharacter(char c, int x, int y) {
-		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
-		if (x < 0 || x > this.data.get(y).length()) throw new ArrayIndexOutOfBoundsException();
 		this.data.get(y).insert(x, c);
 	}
 
@@ -210,8 +233,6 @@ public class EditorBuffer {
 	}
 
 	protected void removeCharacter(int x, int y) {
-		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
-		if (x < 0 || x > this.data.get(y).length()) throw new ArrayIndexOutOfBoundsException();
 		this.data.get(y).deleteCharAt(x);
 	}
 
@@ -236,7 +257,6 @@ public class EditorBuffer {
 	}
 
 	protected EditorAction insertNewline(int y) {
-		if (y < 0) throw new ArrayIndexOutOfBoundsException();
 		if (y > this.data.size()) this.data.add(new StringBuilder());
 		else this.data.add(y, new StringBuilder());
 		this.cursorX = 0;
@@ -249,7 +269,6 @@ public class EditorBuffer {
 	}
 
 	protected void removeLine(int y) {
-		if (y < 0 || y > this.data.size()) throw new ArrayIndexOutOfBoundsException();
 		this.data.remove(y);
 	}
 
