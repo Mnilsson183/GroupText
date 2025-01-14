@@ -150,7 +150,6 @@ public class EditorBuffer {
 		try {
 			editor.render();
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
 	}
 
