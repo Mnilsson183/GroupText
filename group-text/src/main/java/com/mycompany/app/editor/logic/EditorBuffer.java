@@ -135,6 +135,8 @@ public class EditorBuffer {
         	        data.set(action.getY(), new StringBuilder(newLine));
         	    }
         	}
+
+		editor.render();
 	}
 
 	public void processKeyIn(KeyEvent event) {
