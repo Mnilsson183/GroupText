@@ -43,7 +43,11 @@ public class ServerHandler implements Runnable {
 		try {
 			while ((message = input.readLine()) != null) {
 				System.out.println("Received from server: " + message);
-				editorBuffer.applyTransformation(new EditorAction(message));
+				if (message.charAt(0) == ':') {
+					editorBuffer.setState(message.substring(1));
+				} else {
+					editorBuffer.applyTransformation(new EditorAction(message));
+				}
 			}
 		} catch (IOException e) {
 			System.out.println("Error readng from server");

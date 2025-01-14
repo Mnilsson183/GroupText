@@ -40,6 +40,7 @@ public class EditorServer {
                 ClientHandler clientHandler = new ClientHandler(clientSocket, this);
                 clients.add(clientHandler);
                 new Thread(clientHandler).start();
+                clientHandler.send(":" + getLinesToString());
             }
         } catch (IOException e) {
             System.out.println("Server exception: " + e.getMessage());

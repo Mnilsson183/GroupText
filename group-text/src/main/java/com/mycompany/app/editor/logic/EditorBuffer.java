@@ -1,12 +1,10 @@
 package com.mycompany.app.editor.logic;
 
-import java.net.Socket;
 import java.util.ArrayList;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import com.mycompany.app.server.EditorAction;
-import com.mycompany.app.editor.logic.ServerHandler;
 import com.mycompany.app.editor.logic.utils.NotImplementedException;
 
 /**
@@ -137,6 +135,23 @@ public class EditorBuffer {
         	}
 
 		editor.render();
+	}
+
+	protected void setState(String state) {
+		String[] lines = state.split("\n");
+		int diff = Math.abs(lines.length - this.data.size());
+		for (int i = 0; i < diff; i++) {
+			if (lines.length > this.data.size()) this.data.remove(0);
+			else this.data.add(new StringBuilder());
+		}
+		for (int i = 0; i < lines.length; i++) {
+			this.data.set(i, new StringBuilder(lines[i]));
+		}
+		try {
+			editor.render();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public void processKeyIn(KeyEvent event) {
