@@ -26,7 +26,7 @@ public class UserEditorTest {
 //	public void insertCharacterTest() {
 //		UserEditor uEditor = new UserEditor();
 //		uEditor.getFocusedWindow().insertCharacter('c');
-//		assertEquals("c", uEditor.getFocusedWindow().getLine(0));
+//		ass`rtEquals("c", uEditor.getFocusedWindow().getLine(0));
 //		assertEquals(1, uEditor.getFocusedWindow().getCursorX());
 //	}
 }

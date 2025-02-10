@@ -102,6 +102,11 @@ public class EditorBuffer {
 	public void sendTransformation(EditorAction action) {
 		serverHandler.send(action.toString());
 		this.lastAction = action;
+		if (this.secondaryAction != null) {
+			serverHandler.send(this.secondaryAction.toString());
+			this.lastAction = secondaryAction;
+			this.secondaryAction = null;
+		}
 	}
 
 	public void applyTransformation(EditorAction action) {

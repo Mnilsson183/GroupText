@@ -3,7 +3,6 @@ package com.mycompany.app.editor.logic;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.Scanner;
 import java.util.Vector;
 
 import com.mycompany.app.editor.render.GroupTextRender;
