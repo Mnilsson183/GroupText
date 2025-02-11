@@ -160,6 +160,7 @@ public class EditorBuffer {
 
 	public void processKeyIn(KeyEvent event) {
 		EditorAction action = parseKeyEventToEditorAction(event);
+		System.out.println("Action: " + action);
 		if (action != null) sendTransformation(action);
 		if (this.secondaryAction != null) {
 			sendTransformation(action);
