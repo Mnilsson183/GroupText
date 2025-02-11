@@ -7,7 +7,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 import com.mycompany.app.server.EditorAction;
-import com.mycompany.app.editor.logic.EditorBuffer;
 
 /**
  * ServerHandler
@@ -35,6 +34,9 @@ public class ServerHandler implements Runnable {
 	}
 
 	public void send(String message) {
+		if (editorBuffer == null) return;
+
+
 		output.println(message);
 	}
 

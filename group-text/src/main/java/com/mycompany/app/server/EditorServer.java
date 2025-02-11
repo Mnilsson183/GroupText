@@ -1,13 +1,13 @@
 package com.mycompany.app.server;
 
-import com.mycompany.app.server.EditorAction;
-
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 import java.util.Vector;
 
-public class EditorServer {
+public class EditorServer implements Runnable{
     private Vector<String> lines;
     int port = 8080;
     Vector<ClientHandler> clients = new Vector<>();
@@ -23,13 +23,29 @@ public class EditorServer {
         this.port = port;
     }
 
+    public EditorServer(File file, int port) {
+        this.lines = new Vector<>();
+        Scanner scanner;
+        try {
+            scanner = new Scanner(file);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("File not found");
+        }
+
+        while (scanner.hasNextLine()) {
+            this.lines.add(scanner.nextLine());
+        }
+        scanner.close();
+        this.port = port;
+    }
+
     public void sendGroupMessage(String message) {
         for (int i = 0; i < clients.size(); i++) {
             clients.get(i).send(message);
         }
     }
 
-    public void runServer() {
+    public void run() {
         try (ServerSocket serverSocket = new ServerSocket(this.port)) {
             System.out.println("Server is listening on port: " + port);
 

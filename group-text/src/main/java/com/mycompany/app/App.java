@@ -45,7 +45,7 @@ public class App {
             editor.runEditor();
         } else if (target == Argument.RUNSERVER || target == null) {
             EditorServer editorServer = new EditorServer(port);
-            editorServer.runServer();
+            editorServer.run();
         }
     }
 
