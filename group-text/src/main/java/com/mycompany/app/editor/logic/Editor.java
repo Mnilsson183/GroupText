@@ -1,110 +1,108 @@
 package com.mycompany.app.editor.logic;
 
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.net.Socket;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.Vector;
 
 import com.mycompany.app.editor.render.GroupTextRender;
-import com.mycompany.app.server.EditorAction;
 
-/*
- * Editor class
- * Holds all of the data for all users attatched to a session via a get method
- * Primary user is the user that the promgram is being currently run on ie
- * primary user holds the data that the client needs to render
- */
 public class Editor {
 
-	private Vector<UserEditor> users;
-	String serverAddress;
-	int port = 8000;
-	Socket socket;
-	ServerHandler serverHandler;
-	EditorAction lastAction;
-	GroupTextRender renderer;
+	private Vector<EditorBuffer> editorBuffers;
+	private EditorBuffer currBuffer;
+	private GroupTextRender renderer;
+	protected boolean headless;
+	public Config config;
+	protected String configLocation = "config.gt";
 
 	public Editor () {
-		this.users = new Vector<>();
-		this.users.add(new UserEditor());
-		this.serverAddress = "localhost";
-		this.port = 8080;
+		this.editorBuffers = new Vector<EditorBuffer>();
+		this.editorBuffers.add(new EditorBuffer("localhost", 8080, this));
+		this.currBuffer = editorBuffers.get(0);
+		this.config = new Config();
 	}
 
 	public Editor (int port) {
-		this.users = new Vector<>();
-		this.users.add(new UserEditor());
-		this.serverAddress = "localhost";
-		this.port = port;
+		this.editorBuffers = new Vector<EditorBuffer>();
+		this.editorBuffers.add(new EditorBuffer("localhost", port, this));
+		this.currBuffer = editorBuffers.get(0);
+		this.config = new Config();
 	}
 
 	public Editor (String serverAddress, int port) {
-		this.users = new Vector<>();
-		this.users.add(new UserEditor());
-		this.serverAddress = serverAddress;
-		this.port = port;
+		this.editorBuffers = new Vector<EditorBuffer>();
+		this.editorBuffers.add(buildnewBuffer(serverAddress, port));
+		this.currBuffer = editorBuffers.get(0);
+		this.config = new Config();
+	}
+
+	protected Editor (boolean headless) {
+		this.editorBuffers = new Vector<EditorBuffer>();
+		this.editorBuffers.add(new EditorBuffer("localhost", 8080, this));
+		this.currBuffer = editorBuffers.get(0);
+
+		this.headless = headless;
+		this.config = new Config();
+	}
+
+	protected Config getConfig() {
+		Config config = readConfig();
+		if (config == null) return new Config();
+		else return config;
+
 	}
 
 	public void processKeyIn(KeyEvent event) {
-		EditorAction action = this.getPrimaryUser().getFocusedWindow().processKeyIn(event);
-		if (action != null) sendTransformation(action);
-		if (this.getPrimaryUser().getFocusedWindow().hasSecondaryAction()) {
-			sendTransformation(getPrimaryUser().getFocusedWindow().getSecondaryAction());
-			getPrimaryUser().getFocusedWindow().nullSecondaryAction();
-		}
+		this.currBuffer.processKeyIn(event);
 	}
 
-	public void applyTransformation(String s) {
+	public EditorBuffer getCurrEditor() {
+		return currBuffer;
+	}
+
+	private EditorBuffer buildnewBuffer(String serverAddress, int port) {
+		EditorBuffer eBuffer = new EditorBuffer(serverAddress, port, this);
+		eBuffer.init();
+
+		return eBuffer;
+	}
+
+	protected Config readConfig() {
+		Config config;
 		try {
-			EditorAction action = new EditorAction(s);
-			if (action.equals(lastAction)) {
-				System.out.println("this is my last action");
-				return;
-			}
-			this.getPrimaryUser().getFocusedWindow().applyTranslation(action);
-			renderer.updateDisplay();
+			config = Config.parseStringToObject(configLocation);
+			return config;
 		} catch (Exception e) {
-			System.out.println("Exception while applying transformation ");
-			e.printStackTrace();
+			System.out.println("Failed to read config from file");
+			return null;
 		}
 	}
 
-	public void sendTransformation(EditorAction action) {
-		serverHandler.send(action.toString());
-		this.lastAction = action;
+	protected void writeConfig() {
+		try {
+			System.out.println("Writing config");
+			FileWriter fileWriter = new FileWriter(new File(configLocation));
+			fileWriter.write(config.toString());
+			fileWriter.close();
+		} catch (Exception e) {
+			System.out.println("Unable to write config to file");
+		}
+	}
+
+	public void render() {
+		writeConfig();
+		if (headless) return;
+		renderer.updateDisplay();
 	}
 
 	public void runEditor () {
 		// run the rendering
+		if (headless) {
+			renderer = null;
+			return;
+		}
 		renderer = new GroupTextRender(this);
 		renderer.setVisible(true);
-
-		// connect to server
-		try {
-			System.out.println("Connecting to server " + serverAddress + " port: " + port);
-			socket = new Socket(serverAddress, port);
-			System.out.println("Connected to server");
-			
-			serverHandler = new ServerHandler(socket, this);
-
-			serverHandler.listen();
-		} catch (IOException e) {
-			System.err.println("Client exception: " + e.getMessage());
-			e.printStackTrace();
-		}
-
-		//while (true) {
-		//	
-
-		//	//renderer.render();
-		//}
-	}
-
-	public UserEditor getPrimaryUser() {
-		return this.users.get(0);
-	}
-
-	public UserEditor getUser(int index) {
-		return this.users.get(index);
 	}
 }

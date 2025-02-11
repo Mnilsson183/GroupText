@@ -56,3 +56,5 @@ Thumbs.db
 # Application specific
 application*.yml
 application*.properties
+
+config.gt

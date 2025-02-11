@@ -1,15 +1,18 @@
 package com.mycompany.app.editor.logic;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+
 import com.mycompany.app.server.EditorAction;
+import com.mycompany.app.editor.logic.utils.NotImplementedException;
+import com.mycompany.app.editor.render.CSyntax;
+import com.mycompany.app.editor.render.Syntax;
 
 /**
  * EditorWindow
  */
-public class EditorWindow {
+public class EditorBuffer {
 	private int cursorX;
 	private int cursorY;
 
@@ -19,40 +22,31 @@ public class EditorWindow {
 	private ArrayList<StringBuilder> data;
 	private EditorAction secondaryAction = null;
 
-	EditorWindow () {
-		// default window open
-		this.cursorX = 0;
-		this.cursorY = 0;
+	private Editor editor;
 
-		this.filename = "NewFile.txt";
-		//this.fileExtention = "txt";
+	private String serverAddress;
+	private int port;
 
+	private ServerHandler serverHandler;
+
+	// this sucks fix it
+	private EditorAction lastAction;
+
+	private Syntax syntax = new CSyntax();
+
+	protected EditorBuffer() {
 		this.data = new ArrayList<>();
 		this.data.add(new StringBuilder());
+		this.serverAddress = "localhost";
+		this.port = 8080;
 	}
 
-	EditorWindow (String newFilename) {
-		this.cursorX = 0;
-		this.cursorY = 0;
-
-		this.filename = new String(newFilename);
-		//String[] components = filename.split(".");
-		//this.fileExtention = components[components.length - 1];
-
+	public EditorBuffer (String address, int port, Editor editor) {
 		this.data = new ArrayList<>();
-	}
-
-	EditorWindow (EditorWindow window) {
-		this.cursorX = window.getCursorX();
-		this.cursorY = window.getCursorY();
-
-		this.filename = window.getFilename();
-		//this.fileExtention = window.getFileExtention();
-
-		this.data = new ArrayList<>();
-		for (StringBuilder sb : window.data) {
-			this.data.add(new StringBuilder(sb));
-		}
+		this.data.add(new StringBuilder());
+		this.serverAddress = address;
+		this.port = port;
+		this.editor = editor;
 	}
 
 	public int getCursorX () {
@@ -83,6 +77,10 @@ public class EditorWindow {
 		return ret;
 	}
 
+	public Syntax getSyntax() {
+		return this.syntax;
+	}
+
 	public EditorAction getSecondaryAction() {
 		return this.secondaryAction;
 	}
@@ -95,8 +93,36 @@ public class EditorWindow {
 		this.secondaryAction = null;
 	}
 
+	public void init() {
+		try {
+			System.out.println("Connecting to server " + serverAddress + " port: " + port);
+			
+			serverHandler = new ServerHandler(serverAddress, port, this);
 
-	public void applyTranslation(EditorAction action) {
+			new Thread(serverHandler).start();
+
+		} catch (IOException e) {
+			System.out.println("Error creating server handler");
+			e.printStackTrace();
+		}
+	}
+
+	public void sendTransformation(EditorAction action) {
+		serverHandler.send(action.toString());
+		this.lastAction = action;
+		if (this.secondaryAction != null) {
+			serverHandler.send(this.secondaryAction.toString());
+			this.lastAction = secondaryAction;
+			this.secondaryAction = null;
+		}
+	}
+
+	public void applyTransformation(EditorAction action) {
+		if (action.equals(lastAction)) {
+			System.out.println("this is my last action");
+			return;
+		}
+
         	// if y = some int in range and x = -1 delete line
         	if (!action.hasChar()) {
 
@@ -121,21 +147,51 @@ public class EditorWindow {
         	    }
         	}
 
+		editor.render();
 	}
 
-	public EditorAction processKeyIn(KeyEvent e) {
+	protected void setState(String state) {
+		String[] lines = state.split("\n");
+		int diff = Math.abs(lines.length - this.data.size());
+		for (int i = 0; i < diff; i++) {
+			if (lines.length > this.data.size()) this.data.remove(0);
+			else this.data.add(new StringBuilder());
+		}
+		for (int i = 0; i < lines.length; i++) {
+			this.data.set(i, new StringBuilder(lines[i]));
+		}
+		try {
+			editor.render();
+		} catch (Exception e) {
+		}
+	}
+
+	public void processKeyIn(KeyEvent event) {
+		EditorAction action = parseKeyEventToEditorAction(event);
+		System.out.println("Action: " + action);
+		if (action != null) sendTransformation(action);
+		if (this.secondaryAction != null) {
+			sendTransformation(action);
+			secondaryAction = null;
+		}
+	}
+
+	private EditorAction parseKeyEventToEditorAction(KeyEvent e) {
 		System.out.println("Key pressed: " + e.getKeyChar() + " Key-val pressed: " + (int)e.getKeyChar());
 		int keyCode = e.getKeyCode();
 		switch (keyCode) {
 			case KeyEvent.VK_UP:
 				this.moveCursorUp();
 				return null;
+
 			case KeyEvent.VK_DOWN:
 				this.moveCursorDown();
 				return null;
+
 			case KeyEvent.VK_RIGHT:
 				this.moveCursorRight();
 				return null;
+
 			case KeyEvent.VK_LEFT:
 				this.moveCursorLeft();
 				return null;
@@ -146,8 +202,7 @@ public class EditorWindow {
 			case KeyEvent.VK_ENTER:
 				return this.insertNewline();
 			case KeyEvent.VK_TAB:
-				System.out.println("Tab not implemented");
-				return null;
+				throw new NotImplementedException();
 
 			case KeyEvent.VK_SHIFT:
 				return null;
@@ -194,8 +249,6 @@ public class EditorWindow {
 	}
 
 	protected void insertCharacter(char c, int x, int y) {
-		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
-		if (x < 0 || x > this.data.get(y).length()) throw new ArrayIndexOutOfBoundsException();
 		this.data.get(y).insert(x, c);
 	}
 
@@ -210,8 +263,6 @@ public class EditorWindow {
 	}
 
 	protected void removeCharacter(int x, int y) {
-		if (y > this.data.size() || y < 0) throw new ArrayIndexOutOfBoundsException();
-		if (x < 0 || x > this.data.get(y).length()) throw new ArrayIndexOutOfBoundsException();
 		this.data.get(y).deleteCharAt(x);
 	}
 
@@ -236,7 +287,6 @@ public class EditorWindow {
 	}
 
 	protected EditorAction insertNewline(int y) {
-		if (y < 0) throw new ArrayIndexOutOfBoundsException();
 		if (y > this.data.size()) this.data.add(new StringBuilder());
 		else this.data.add(y, new StringBuilder());
 		this.cursorX = 0;
@@ -249,11 +299,10 @@ public class EditorWindow {
 	}
 
 	protected void removeLine(int y) {
-		if (y < 0 || y > this.data.size()) throw new ArrayIndexOutOfBoundsException();
 		this.data.remove(y);
 	}
 
-	public boolean equals(EditorWindow window) {
+	public boolean equals(EditorBuffer window) {
 		if (this.filename != window.filename) return false;
 		if (this.cursorX != window.cursorX) return false;
 		if (this.cursorY != window.cursorY) return false;
