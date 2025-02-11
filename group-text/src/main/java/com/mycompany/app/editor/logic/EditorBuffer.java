@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import com.mycompany.app.server.EditorAction;
 import com.mycompany.app.editor.logic.utils.NotImplementedException;
+import com.mycompany.app.editor.render.CSyntax;
+import com.mycompany.app.editor.render.Syntax;
 
 /**
  * EditorWindow
@@ -29,6 +31,8 @@ public class EditorBuffer {
 
 	// this sucks fix it
 	private EditorAction lastAction;
+
+	private Syntax syntax = new CSyntax();
 
 	protected EditorBuffer() {
 		this.data = new ArrayList<>();
@@ -71,6 +75,10 @@ public class EditorBuffer {
 			ret.add(new String(s));
 		}
 		return ret;
+	}
+
+	public Syntax getSyntax() {
+		return this.syntax;
 	}
 
 	public EditorAction getSecondaryAction() {

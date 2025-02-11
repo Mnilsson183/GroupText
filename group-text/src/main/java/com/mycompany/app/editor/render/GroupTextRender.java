@@ -10,6 +10,7 @@ import com.mycompany.app.editor.logic.Config;
 import com.mycompany.app.editor.logic.Editor;
 import com.mycompany.app.editor.logic.EditorBuffer;
 import com.mycompany.app.server.EditorAction;
+import com.mycompany.app.editor.render.Syntax;
 
 public class GroupTextRender extends JFrame {
     private Editor editor;
@@ -42,13 +43,13 @@ public class GroupTextRender extends JFrame {
         buffersList.addListSelectionListener(null);
         buffersPanel.add(new JScrollPane(buffersList));
 
-        buffersPanel.setBackground(config.getThemeBackgroundTones1());
+        buffersPanel.setBackground(config.getTheme().getThemeBackgroundTones1());
 
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(editorPanel, BorderLayout.CENTER);
         mainPanel.add(buffersPanel, BorderLayout.WEST);
 
-        editorPanel.setBackground(config.getThemeBackgroundTones2());
+        editorPanel.setBackground(config.getTheme().getThemeBackgroundTones2());
 
         mainPanel.setFocusable(true);
         mainPanel.requestFocusInWindow();
@@ -80,30 +81,44 @@ public class GroupTextRender extends JFrame {
 
         g.setFont(new Font(config.getFontName(), config.getFontStyle(), config.getFontSize()));
 
-        Scanner scanner = null;
+        EditorTheme theme = config.getTheme();
+
         for (String line : lines) {
-            scanner = new Scanner(line);
-            scanner.useDelimiter(" ");
-            int lineIndex = 0;
-            while (scanner.hasNext()) {
-                String s = scanner.next();
-                Color highlightColor = highlightSelector(s);
-                System.out.println(s + ":" + highlightColor);
-                g.setColor(highlightColor);
-                g.drawString(s, 10 + lineIndex * 7, 20 + lines.indexOf(line) * 15);
-                lineIndex += s.length() + 1;
+            Syntax.Highlight[] highlighting = currEditorBuffer.getSyntax().getHighlightColor(line);
+            for (int i = 0; i < line.length(); i++) {
+                g.setColor(theme.getTextColor());
+                switch (highlighting[i]) {
+                    case DEFAULT:
+                        g.setColor(theme.getTextColor());
+                        break;
+                    case COMMENT:
+                        g.setColor(theme.getCommentColor());
+                        break;
+                    case STRING:
+                        g.setColor(theme.getStringColor());
+                        break;
+                    case NUMBER:
+                        g.setColor(theme.getNumberColor());
+                        break;
+                    case KEYWORD:
+                        g.setColor(theme.getKeywordColor());
+                        break;
+                    case OPERATOR:
+                        g.setColor(theme.getOperatorColor());
+                        break;
+                    case SEPARATOR:
+                        g.setColor(theme.getSeparatorColor());
+                        break;
+                    case VARIABLE:
+                        g.setColor(theme.getVariableColor());
+                        break;
+                }
+                g.drawString(String.valueOf(line.charAt(i)), 10 + i * 7, 20 + lines.indexOf(line) * 15);
             }
         }
-        if (scanner != null) scanner.close();
 
         // Draw cursor
-        g.setColor(config.getCursorColor());
+        g.setColor(theme.getCursorColor());
         g.fillRect(10 + cursorX * 7, 8 + cursorY * 15, 2, 14);
-    }
-
-    private Color highlightSelector(String s) {
-        if (s.equals("Hello")) return config.getAccentColor1();
-        if (s.equals("World")) return config.getAccentColor2();
-        else return config.getTextColor();
     }
 }
