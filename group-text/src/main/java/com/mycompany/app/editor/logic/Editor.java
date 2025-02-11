@@ -18,29 +18,25 @@ public class Editor {
 
 	public Editor () {
 		this.editorBuffers = new Vector<EditorBuffer>();
-		this.editorBuffers.add(new EditorBuffer("localhost", 8080, this));
-		this.currBuffer = editorBuffers.get(0);
+		this.currBuffer = null;
 		this.config = new Config();
 	}
 
 	public Editor (int port) {
 		this.editorBuffers = new Vector<EditorBuffer>();
-		this.editorBuffers.add(new EditorBuffer("localhost", port, this));
-		this.currBuffer = editorBuffers.get(0);
+		this.currBuffer = null;
 		this.config = new Config();
 	}
 
 	public Editor (String serverAddress, int port) {
 		this.editorBuffers = new Vector<EditorBuffer>();
-		this.editorBuffers.add(buildnewBuffer(serverAddress, port));
-		this.currBuffer = editorBuffers.get(0);
+		this.currBuffer = null;
 		this.config = new Config();
 	}
 
 	protected Editor (boolean headless) {
 		this.editorBuffers = new Vector<EditorBuffer>();
-		this.editorBuffers.add(new EditorBuffer("localhost", 8080, this));
-		this.currBuffer = editorBuffers.get(0);
+		this.currBuffer = null;
 
 		this.headless = headless;
 		this.config = new Config();
@@ -64,6 +60,11 @@ public class Editor {
 	public EditorBuffer buildnewBuffer(String serverAddress, int port) {
 		EditorBuffer eBuffer = new EditorBuffer(serverAddress, port, this);
 		eBuffer.init();
+
+		this.editorBuffers.add(eBuffer);
+		if (currBuffer == null) {
+			currBuffer = eBuffer;
+		}
 
 		return eBuffer;
 	}
