@@ -34,6 +34,9 @@ public class ServerHandler implements Runnable {
 	}
 
 	public void send(String message) {
+		if (editorBuffer == null) return;
+
+
 		output.println(message);
 	}
 

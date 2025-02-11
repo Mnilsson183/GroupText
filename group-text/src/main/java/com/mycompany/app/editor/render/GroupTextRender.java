@@ -73,6 +73,8 @@ public class GroupTextRender extends JFrame {
                     if (returnValue == JFileChooser.APPROVE_OPTION) {
                         try {
                             new Thread(new EditorServer(fileChooser.getSelectedFile(), 8080)).start();
+                            String bufferName = fileChooser.getSelectedFile().getName() != null ? fileChooser.getSelectedFile().getName() : "Local Server";
+                            listModel.addElement(bufferName);
                             editor.buildnewBuffer("localhost", 8080);
                             editorPanel.repaint();
                         } catch (UnsupportedOperationException ex) {
