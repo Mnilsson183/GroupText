@@ -1,7 +1,5 @@
 package com.mycompany.app.server;
 
-import com.mycompany.app.server.EditorAction;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

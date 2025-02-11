@@ -61,7 +61,7 @@ public class Editor {
 		return currBuffer;
 	}
 
-	private EditorBuffer buildnewBuffer(String serverAddress, int port) {
+	public EditorBuffer buildnewBuffer(String serverAddress, int port) {
 		EditorBuffer eBuffer = new EditorBuffer(serverAddress, port, this);
 		eBuffer.init();
 

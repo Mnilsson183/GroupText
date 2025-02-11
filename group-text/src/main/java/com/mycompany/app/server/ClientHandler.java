@@ -1,7 +1,5 @@
 package com.mycompany.app.server;
 
-import com.mycompany.app.server.EditorServer;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

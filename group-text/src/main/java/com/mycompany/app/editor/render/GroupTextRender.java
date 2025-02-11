@@ -4,13 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import com.mycompany.app.editor.logic.Config;
 import com.mycompany.app.editor.logic.Editor;
 import com.mycompany.app.editor.logic.EditorBuffer;
-import com.mycompany.app.server.EditorAction;
-import com.mycompany.app.editor.render.Syntax;
 
 public class GroupTextRender extends JFrame {
     private Editor editor;
@@ -36,6 +33,53 @@ public class GroupTextRender extends JFrame {
                 render(g);
             }
         };
+
+        // add a plus button to add a new buffer that brings up a dialog menu
+        JButton addBuffer = new JButton("+");
+        addBuffer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            Object[] options = {"Connect to Server", "Host Local Server"};
+            int choice = JOptionPane.showOptionDialog(null, "Choose an option", "New Buffer",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+
+            if (choice == 0) {
+                // Connect to Server
+                JTextField serverAddressField = new JTextField();
+                JTextField portField = new JTextField();
+                Object[] message = {
+                    "Server Address:", serverAddressField,
+                    "Port:", portField
+                };
+
+                int option = JOptionPane.showConfirmDialog(null, message, "Connect to Server", JOptionPane.OK_CANCEL_OPTION);
+                if (option == JOptionPane.OK_OPTION) {
+                String serverAddress = serverAddressField.getText();
+                String port = portField.getText();
+                if (!serverAddress.isEmpty() && !port.isEmpty()) {
+                    String bufferName = serverAddress + ":" + port;
+                    listModel.addElement(bufferName);
+                    editor.buildnewBuffer(serverAddress, Integer.parseInt(port));
+                }
+                }
+            } else if (choice == 1) {
+                // Host Local Server
+                JFileChooser fileChooser = new JFileChooser();
+                int returnValue = fileChooser.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                try {
+                    throw new UnsupportedOperationException("File selection not implemented yet");
+                } catch (UnsupportedOperationException ex) {
+                    ex.printStackTrace();
+                }
+                }
+            }
+            }
+        });
+
+        buffersPanel.setLayout(new BoxLayout(buffersPanel, BoxLayout.Y_AXIS));
+        buffersPanel.add(addBuffer);
+
 
         listModel = new DefaultListModel<>();
         buffersList = new JList<>(listModel);
